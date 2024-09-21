@@ -17,4 +17,10 @@
     <PackageReference Include="SimulationFramework.OpenGL" Version="0.3.0-alpha.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="assets\fonts\font.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
