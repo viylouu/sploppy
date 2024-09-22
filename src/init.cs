@@ -2,9 +2,14 @@
     static void init() {
         Window.Title = "sploppy";
 
+        Simulation.SetFixedResolution(240, 135, Color.Black, false, false, true);
+
         dfonttex = Graphics.LoadTexture(@"assets\fonts\font.png");
         dfont = genfont(dfonttex, " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz");
 
-        Simulation.SetFixedResolution(240,135,Color.Black,false,false,true);
+        sploppertex = Graphics.LoadTexture(@"assets\sprites\splopper.png");
+        guntex = Graphics.LoadTexture(@"assets\sprites\gun.png");
+        bgtex = Graphics.LoadTexture(@"assets\sprites\bg.png");
+        cloudstex = Graphics.LoadTexture(@"assets\sprites\clouds.png");
     }
 }
