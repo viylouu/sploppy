@@ -8,6 +8,8 @@ partial class sploppy {
     static float timeofdeath;
     const byte gravity = 82;
     static bool gameover;
+    static byte diff = 1;
+    const float bgscrollspeed = 240 / 8f;
 
     //font
     static ITexture dfonttex;
@@ -22,6 +24,9 @@ partial class sploppy {
     static ITexture bgtex;
     static ITexture ammotex;
     static ITexture gootex;
+    static ITexture darkcloudstex;
+    static ITexture bghardtex;
+    static ITexture bgmastertex;
 
     //audio
     static ISound music;
@@ -34,9 +39,6 @@ partial class sploppy {
     static SoundPlayback windsfxpb;
     static ISound gameoversfx;
     static ISound startgamesfx;
-
-    //bg
-    const float bgscrollspeed = 240 / 8f;
 
     //ammo
     static ushort ammo = 10;
@@ -52,7 +54,4 @@ partial class sploppy {
     static bool hasgooalt = false;
     static float lastgootime = 0;
     static float goospawntime = 6;
-
-    //menu
-    static bool menu = true;
 }

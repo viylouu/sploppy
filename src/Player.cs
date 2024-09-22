@@ -56,15 +56,12 @@
                     Pvel = ldir * gunforce; 
                     ammo--; 
                     shootsfx.Play(); 
-                    canmove = true;
-                    right = ldir.X > 0;
-
-                    if (menu) {
+                    if (!canmove) {
                         startgamesfx.Play();
                         starttime = Time.TotalTime;
                     }
-
-                    menu = false;
+                    canmove = true;
+                    right = ldir.X > 0;
                 }
                 else if (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space))
                     shootnoammosfx.Play();

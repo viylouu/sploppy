@@ -17,6 +17,9 @@
         cloudstex = Graphics.LoadTexture(@"assets\sprites\clouds.png");
         ammotex = Graphics.LoadTexture(@"assets\sprites\ammo.png");
         gootex = Graphics.LoadTexture(@"assets\sprites\goo.png");
+        darkcloudstex = Graphics.LoadTexture(@"assets\sprites\darkclouds.png");
+        bghardtex = Graphics.LoadTexture(@"assets\sprites\bghard.png");
+        bgmastertex = Graphics.LoadTexture(@"assets\sprites\bgmaster.png");
 
         music = Audio.LoadSound(@"assets\audio\song.wav");
         musicpb = music.Loop();

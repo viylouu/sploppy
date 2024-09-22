@@ -5,17 +5,35 @@ partial class sploppy {
         //Update
         Player.Updateplayer();
 
+        mainmenu.Updatemenu();
+
         //Draw Calls
         c.Clear(Color.CornflowerBlue);
 
-        //BG
-        c.DrawTexture(bgtex);
-
-        //Clouds
-        c.DrawTexture(cloudstex, new(-Time.TotalTime * bgscrollspeed % 240-1, 1, 240,135, Alignment.TopLeft), shadowcol);
-        c.DrawTexture(cloudstex, new(-Time.TotalTime * bgscrollspeed % 240 + 239, 1, 240,135, Alignment.TopLeft), shadowcol);
-        c.DrawTexture(cloudstex, -Time.TotalTime * bgscrollspeed % 240, 0, Alignment.TopLeft);
-        c.DrawTexture(cloudstex, -Time.TotalTime * bgscrollspeed % 240 + 240, 0, Alignment.TopLeft);
+        //BG and Clouds
+        switch(diff) {
+            case 1:
+                c.DrawTexture(bgtex);
+                c.DrawTexture(cloudstex, new(-Time.TotalTime * bgscrollspeed % 240 - 1, 1, 240, 135, Alignment.TopLeft), shadowcol);
+                c.DrawTexture(cloudstex, new(-Time.TotalTime * bgscrollspeed % 240 + 239, 1, 240, 135, Alignment.TopLeft), shadowcol);
+                c.DrawTexture(cloudstex, -Time.TotalTime * bgscrollspeed % 240, 0, Alignment.TopLeft);
+                c.DrawTexture(cloudstex, -Time.TotalTime * bgscrollspeed % 240 + 240, 0, Alignment.TopLeft);
+                break;
+            case 2:
+                c.DrawTexture(bghardtex);
+                c.DrawTexture(darkcloudstex, new(-Time.TotalTime * bgscrollspeed % 240 - 1, 1, 240, 135, Alignment.TopLeft), shadowcol);
+                c.DrawTexture(darkcloudstex, new(-Time.TotalTime * bgscrollspeed % 240 + 239, 1, 240, 135, Alignment.TopLeft), shadowcol);
+                c.DrawTexture(darkcloudstex, -Time.TotalTime * bgscrollspeed % 240, 0, Alignment.TopLeft);
+                c.DrawTexture(darkcloudstex, -Time.TotalTime * bgscrollspeed % 240 + 240, 0, Alignment.TopLeft);
+                break;
+            case 3:
+                c.DrawTexture(bgmastertex);
+                c.DrawTexture(darkcloudstex, new(-Time.TotalTime * bgscrollspeed % 240 - 1, 1, 240, 135, Alignment.TopLeft), shadowcol);
+                c.DrawTexture(darkcloudstex, new(-Time.TotalTime * bgscrollspeed % 240 + 239, 1, 240, 135, Alignment.TopLeft), shadowcol);
+                c.DrawTexture(darkcloudstex, -Time.TotalTime * bgscrollspeed % 240, 0, Alignment.TopLeft);
+                c.DrawTexture(darkcloudstex, -Time.TotalTime * bgscrollspeed % 240 + 240, 0, Alignment.TopLeft);
+                break;
+        }
 
         //UI
         rendertext(c, dfont, ammo + " ammo", new Vector2(3, 4), shadowcol);
@@ -112,8 +130,6 @@ partial class sploppy {
 
         //Game Over
         if (gameover) {
-            rendertext(c, dfont, "Press m to go to the menu", new Vector2(120 - predicttextwidth(dfont, "Press m to go to the menu") / 2f - 1, round(67.5f + 67.5f * (1 - easeoutback((Time.TotalTime - timeofdeath) / 2f))) + 17 - dfont.charh), shadowcol);
-            rendertext(c, dfont, "Press m to go to the menu", new Vector2(120 - predicttextwidth(dfont, "Press m to go to the menu") / 2f, round(67.5f + 67.5f * (1 - easeoutback((Time.TotalTime - timeofdeath) / 2f))) + 16 - dfont.charh), Color.White);
             rendertext(c,dfont, "Press r to restart", new Vector2(120-predicttextwidth(dfont, "Press r to restart")/2f-1,round(67.5f+67.5f*(1-easeoutback((Time.TotalTime-timeofdeath)/2f)))+9-dfont.charh), shadowcol);
             rendertext(c,dfont, "Press r to restart", new Vector2(120-predicttextwidth(dfont, "Press r to restart")/2f,round(67.5f+67.5f*(1-easeoutback((Time.TotalTime-timeofdeath)/2f)))+8-dfont.charh),Color.White);
             rendertext(c,dfont,"Game Over",new Vector2(98,round(67.5f+67.5f*(1-easeoutback((Time.TotalTime-timeofdeath)/2f)))+1-dfont.charh), shadowcol);
@@ -130,20 +146,6 @@ partial class sploppy {
                     ammos.Add(new() { pos = new Vector2(r.Next(12, 228), r.Next(12, 100)), spawntime = Time.TotalTime + (float)r.NextDouble() / 6f });
                 lastgootime = Time.TotalTime;
                 starttime = Time.TotalTime;
-            }
-
-            if (Keyboard.IsKeyPressed(Key.M)) {
-                gameover = false;
-                Player.Ppos = new Vector2(120, 64);
-                Player.canmove = false;
-                Player.right = true;
-                ammo = 10;
-                totalammo = (byte)r.Next(3, 5);
-                for (int i = 0; i < totalammo; i++)
-                    ammos.Add(new() { pos = new Vector2(r.Next(12, 228), r.Next(12, 100)), spawntime = Time.TotalTime + (float)r.NextDouble() / 6f });
-                lastgootime = Time.TotalTime;
-                starttime = Time.TotalTime;
-                menu = true;
             }
         }
     }
