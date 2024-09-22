@@ -14,5 +14,7 @@
 
         music = Audio.LoadSound(@"assets\audio\song.wav");
         musicpb = music.Loop();
+        shootsfx = Audio.LoadSound(@"assets\audio\shoot.wav");
+        shootnoammosfx = Audio.LoadSound(@"assets\audio\shootnoammo.wav");
     }
 }
