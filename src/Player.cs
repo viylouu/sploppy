@@ -6,7 +6,7 @@ partial class sploppy {
         const byte drag = 32;
         const byte gunforce = 112;
 
-        static Vector2 Ppos = new Vector2(120, 24);
+        public static Vector2 Ppos = new Vector2(120, 24);
         static Vector2 Pvel = Vector2.Zero;
 
         public static void Updateplayer() {
@@ -33,12 +33,19 @@ partial class sploppy {
 
         public static void Drawplayer(ICanvas canvas) {
             // Drawing the Player
+            canvas.DrawTexture(sploppertex, new(Ppos.X-1, Ppos.Y+1, 8,6, Alignment.Center), shadowcol);
             canvas.DrawTexture(sploppertex, Ppos ,Alignment.Center);
+
+            canvas.Translate(Ppos.X-1, Ppos.Y+1);
+            canvas.Rotate(atan2(Vector2.Normalize(Mouse.Position - Ppos)));
+            canvas.Translate(8, 0);
+            canvas.DrawTexture(guntex, new(Vector2.Zero, new(16,8*(Mouse.Position.X<Ppos.X?-1:1)),Alignment.CenterLeft), shadowcol);
+            canvas.ResetState();
 
             canvas.Translate(Ppos);
             canvas.Rotate(atan2(Vector2.Normalize(Mouse.Position-Ppos)));
             canvas.Translate(8,0);
-            canvas.DrawTexture(guntex, Vector2.Zero, new Vector2(16, 8 * (Mouse.Position.X<Ppos.X?-1:1)), Alignment.CenterLeft);
+            canvas.DrawTexture(guntex, Vector2.Zero, new(16, 8*(Mouse.Position.X<Ppos.X?-1:1)), Alignment.CenterLeft);
             canvas.ResetState();
         }
     }

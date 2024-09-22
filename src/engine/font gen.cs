@@ -56,4 +56,35 @@
 
         c.Flush();
     }
+
+    static void rendertext(ICanvas c, font f, string text, Vector2 pos, ColorF col) {
+        int x = 0;
+        for (int i = 0; i < text.Length; i++) {
+            if (text[i] == ' ')
+                x += f.data[f.chars.IndexOf(' ')].width;
+            else {
+                int ch = f.chars.IndexOf(text[i]);
+
+                if (ch == -1) {
+                    c.DrawTexture(
+                        f.tex,
+                        new Rectangle(0,0,f.charw,f.charh),
+                        new Rectangle(pos.X+x,pos.Y,f.charw,f.charh),
+                        col
+                    );
+                    x += f.data[f.chars.IndexOf(' ')].width;
+                } else { 
+                    c.DrawTexture(
+                        f.tex,
+                        new Rectangle(ch*f.charw,0,f.charw,f.charh),
+                        new Rectangle(pos.X+x,pos.Y,f.charw,f.charh),
+                        col
+                    );
+                    x += f.data[f.chars.IndexOf(text[i])].width;
+                }
+            }
+        }
+
+        c.Flush();
+    }
 }
