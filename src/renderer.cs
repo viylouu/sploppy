@@ -1,4 +1,6 @@
-﻿partial class sploppy {
+﻿using Silk.NET.OpenGL;
+
+partial class sploppy {
     static void rend(ICanvas c) {
         //Update
         Player.Updateplayer();
@@ -91,6 +93,10 @@
         }
 
         Player.Drawplayer(c);
-        
+        if (Player.gameover)
+        {
+            rendertext(c, dfont, "Game Over", new Vector2(98,72), shadowcol);
+            rendertext(c,dfont,"Game Over",new Vector2(99, 71),Color.White);
+        }
     }
 }

@@ -9,10 +9,12 @@
         public static Vector2 Ppos = new Vector2(120, 64);
         static Vector2 Pvel = Vector2.Zero;
 
+        public static bool gameover;
+
         static bool canmove = false;
 
         public static void Updateplayer() {
-            if(canmove) {
+            if(canmove && !gameover) {
                 //Update Position
                 Ppos += Pvel * Time.DeltaTime;
 
@@ -21,21 +23,24 @@
                 if (Ppos.X < 4) { Pvel.X = abs(Pvel.X); Ppos.X = 4; }
                 if (Ppos.X > 236) { Pvel.X = -abs(Pvel.X); Ppos.X = 236; }
 
+                //Lose State
+                if (Ppos.Y > 135) gameover = true;
+
                 //Score
                 Score = (uint)MathF.Floor((Time.TotalTime-starttime)*4);
 
                 //Gravity
                 Pvel.Y += gravity * Time.DeltaTime;
-
-                if(Pvel.X > 0) Pvel.X -= drag * Time.DeltaTime;
+                if (Pvel.X > 0) Pvel.X -= drag * Time.DeltaTime;
                 else if(Pvel.X < 0) Pvel.X += drag * Time.DeltaTime;
             }
 
             //Input
-            if (ammo > 0 && (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space)))
-            { Pvel = -Vector2.Normalize(Mouse.Position - Ppos) * gunforce; ammo--; shootsfx.Play(); canmove = true; }
-            else if (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space))
-                shootnoammosfx.Play();
+            if (!gameover)
+                if (ammo > 0 && (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space)))
+                    { Pvel = -Vector2.Normalize(Mouse.Position - Ppos) * gunforce; ammo--; shootsfx.Play(); canmove = true; }
+                else if (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space))
+                    shootnoammosfx.Play();
         }
 
         public static void Drawplayer(ICanvas canvas) {
