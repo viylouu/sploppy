@@ -51,4 +51,7 @@ partial class sploppy {
     static bool hasgooalt = false;
     static float lastgootime = 0;
     static float goospawntime = 6;
+
+    //menu
+    static bool menu = true;
 }
