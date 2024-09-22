@@ -11,5 +11,8 @@
         guntex = Graphics.LoadTexture(@"assets\sprites\gun.png");
         bgtex = Graphics.LoadTexture(@"assets\sprites\bg.png");
         cloudstex = Graphics.LoadTexture(@"assets\sprites\clouds.png");
+
+        music = Audio.LoadSound(@"assets\audio\song.wav");
+        musicpb = music.Loop();
     }
 }

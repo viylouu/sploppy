@@ -10,6 +10,11 @@
     static ITexture cloudstex;
     static ITexture bgtex;
 
+    //audio
+    static ISound music;
+    static SoundPlayback musicpb;
+
     //bg
     static float bgscrollspeed = 240 / 8f;
+
 }

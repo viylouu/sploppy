@@ -18,6 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="assets\audio\song.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="assets\fonts\font.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
