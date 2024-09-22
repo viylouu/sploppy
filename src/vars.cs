@@ -4,6 +4,7 @@ partial class sploppy {
     //misc
     static Random r = new Random();
     static ColorF shadowcol = new ColorF(0,0,0,.25f);
+    static float starttime;
 
     //font
     static ITexture dfonttex;

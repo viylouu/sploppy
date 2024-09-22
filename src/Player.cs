@@ -6,6 +6,8 @@ partial class sploppy {
         const byte drag = 32;
         const byte gunforce = 112;
 
+        public static uint Score;
+
         public static Vector2 Ppos = new Vector2(120, 24);
         static Vector2 Pvel = Vector2.Zero;
 
@@ -17,6 +19,9 @@ partial class sploppy {
             if (Ppos.Y < 3) { Pvel.Y = abs(Pvel.Y); Ppos.Y = 3; }
             if (Ppos.X < 4) { Pvel.X = abs(Pvel.X); Ppos.X = 4; }
             if (Ppos.X > 236) { Pvel.X = -abs(Pvel.X); Ppos.X = 236; }
+
+            //Score
+            Score = (uint)MathF.Floor((Time.TotalTime-starttime)*4);
 
             //Gravity
             Pvel.Y += gravity * Time.DeltaTime;

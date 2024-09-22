@@ -29,5 +29,6 @@
             ammoposses.Add(new Vector2(r.Next(12, 228), r.Next(12, 100)));
 
         lastgootime = Time.TotalTime;
+        starttime = Time.TotalTime;
     }
 }

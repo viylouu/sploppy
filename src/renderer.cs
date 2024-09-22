@@ -56,8 +56,10 @@
         }
 
         Player.Drawplayer(c);
-
+        c.DrawRect(0,0)
         rendertext(c, dfont, ammo + " ammo", new Vector2(2,4), shadowcol);
         rendertext(c, dfont, ammo + " ammo", new Vector2(3,3), Color.White);
+        rendertext(c, dfont, Player.Score + "", new Vector2(119, 4), shadowcol);
+        rendertext(c, dfont, Player.Score + "", new Vector2(120, 3), Color.White);
     }
 }
