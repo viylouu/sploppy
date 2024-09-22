@@ -2,6 +2,9 @@
     static void rend(ICanvas c) {
         c.Clear(Color.Black);
 
-        rendertext(c, dfont, $"{round(1/Time.DeltaTime)} fps", new Vector2(3,3), Color.White);
+        c.DrawTexture(bgtex);
+
+        c.DrawTexture(cloudstex, -Time.TotalTime*bgscrollspeed%240, 0, Alignment.TopLeft);
+        c.DrawTexture(cloudstex, -Time.TotalTime*bgscrollspeed%240+240, 0, Alignment.TopLeft);
     }
 }
