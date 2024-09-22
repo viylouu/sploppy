@@ -1,9 +1,7 @@
-﻿using System;
-
-partial class sploppy {
+﻿partial class sploppy {
     public class Player {
         const byte gravity = 82;
-        const byte drag = 32;
+        const byte drag = 24;
         const byte gunforce = 112;
 
         public static Vector2 Ppos = new Vector2(120, 24);
