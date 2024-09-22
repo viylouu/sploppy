@@ -8,20 +8,22 @@ partial class sploppy {
         //Draw Calls
         c.Clear(Color.CornflowerBlue);
 
-        Player.Drawplayer(c);
-
+        //BG
         c.DrawTexture(bgtex);
 
+        //Clouds
         c.DrawTexture(cloudstex, new(-Time.TotalTime * bgscrollspeed % 240-1, 1, 240,135, Alignment.TopLeft), shadowcol);
         c.DrawTexture(cloudstex, new(-Time.TotalTime * bgscrollspeed % 240 + 239, 1, 240,135, Alignment.TopLeft), shadowcol);
         c.DrawTexture(cloudstex, -Time.TotalTime * bgscrollspeed % 240, 0, Alignment.TopLeft);
         c.DrawTexture(cloudstex, -Time.TotalTime * bgscrollspeed % 240 + 240, 0, Alignment.TopLeft);
 
+        //UI
         rendertext(c, dfont, ammo + " ammo", new Vector2(3, 4), shadowcol);
         rendertext(c, dfont, ammo + " ammo", new Vector2(4, 3), Color.White);
         rendertext(c, dfont, Player.Score + "", new Vector2(119, 4), shadowcol);
         rendertext(c, dfont, Player.Score + "", new Vector2(120, 3), Color.White);
 
+        //Spawn ammo
         for (int i = 0; i < ammos.Count; i++) {
             float scalemult = easeoutelastic(Time.TotalTime-ammos[i].spawntime);
             c.DrawTexture(ammotex, new (ammos[i].pos + new Vector2(-1,sin(Time.TotalTime*3+i*4)*3+1), new Vector2(6,8)*scalemult, Alignment.Center), shadowcol);
@@ -36,13 +38,14 @@ partial class sploppy {
                 i--;
             }
         }
-
+        //Move my goo
         if (!hasgoo && lastgootime + goospawntime <= Time.TotalTime && !gameover) {
             goo.pos = new Vector2(r.Next(12, 228), r.Next(12, 100));
             goo.spawntime = Time.TotalTime + (float)r.NextDouble()/6f;
             hasgoo = true;
         }
 
+        //Consume Goo
         if (hasgoo) {
             float scalemult = easeoutelastic(Time.TotalTime-goo.spawntime);
             c.DrawTexture(gootex, new (goo.pos + new Vector2(-1,sin(Time.TotalTime*3)*3+1), new Vector2(8,8)*scalemult, Alignment.Center), shadowcol);
@@ -64,6 +67,7 @@ partial class sploppy {
             }
         }
 
+        //More BOOLET
         if (collammo == totalammo) {
             ammos.Clear();
             totalammo = (byte)r.Next(3, 5);
@@ -73,6 +77,7 @@ partial class sploppy {
                 ammos.Add(new() { pos = new Vector2(r.Next(12, 228), r.Next(12, 100)), spawntime = Time.TotalTime + (float)r.NextDouble()/6f });
         }
 
+        //The boolets
         for (int i = 0; i < ammosalt.Count; i++) {
             float scalemult = 1-easeinback(2*(Time.TotalTime-ammosalt[i].spawntime));
             c.DrawTexture(ammotex, new(ammosalt[i].pos + new Vector2(-1, sin(Time.TotalTime * 3 + i * 4) * 3 + 1), new Vector2(6, 8) * scalemult, Alignment.Center), shadowcol);
@@ -87,6 +92,7 @@ partial class sploppy {
             }
         }
 
+        //The Goo
         if (hasgooalt) { 
             float scalemult = 1-easeinback(2*(Time.TotalTime-gooalt.spawntime));
             c.DrawTexture(gootex, new(gooalt.pos + new Vector2(-1, sin(Time.TotalTime * 3) * 3 + 1), new Vector2(8, 8) * scalemult, Alignment.Center), shadowcol);
@@ -99,7 +105,12 @@ partial class sploppy {
                 hasgooalt = false;
         }
 
+        //Player
         Player.Drawplayer(c);
+
+        mainmenu.DrawMenu(c);
+
+        //Game Over
         if (gameover) {
             rendertext(c,dfont, "Press r to restart", new Vector2(120-predicttextwidth(dfont, "Press r to restart")/2f-1,round(67.5f+67.5f*(1-easeoutback((Time.TotalTime-timeofdeath)/2f)))+9-dfont.charh), shadowcol);
             rendertext(c,dfont, "Press r to restart", new Vector2(120-predicttextwidth(dfont, "Press r to restart")/2f,round(67.5f+67.5f*(1-easeoutback((Time.TotalTime-timeofdeath)/2f)))+8-dfont.charh),Color.White);
