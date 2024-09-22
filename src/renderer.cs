@@ -25,10 +25,11 @@
             c.DrawTexture(ammotex, new (ammos[i].pos + new Vector2(-1,sin(Time.TotalTime*3+i*4)*3+1), new Vector2(6,8)*scalemult, Alignment.Center), shadowcol);
             c.DrawTexture(ammotex, ammos[i].pos + new Vector2(0,sin(Time.TotalTime*3+i*4)*3), new Vector2(6,8)*scalemult, Alignment.Center);
 
-            if (dist(Player.Ppos, ammos[i].pos) < 6) {
+            if (dist(Player.Ppos, ammos[i].pos) < 8) {
                 collectammosfx.Play();
                 ammo++;
                 collammo++;
+                ammosalt.Add(new() { pos = ammos[i].pos, spawntime = Time.TotalTime });
                 ammos.RemoveAt(i);
                 i--;
             }
@@ -45,12 +46,17 @@
             c.DrawTexture(gootex, new (goo.pos + new Vector2(-1,sin(Time.TotalTime*3)*3+1), new Vector2(8,8)*scalemult, Alignment.Center), shadowcol);
             c.DrawTexture(gootex, goo.pos + new Vector2(0,sin(Time.TotalTime*3)*3), new Vector2(8,8)*scalemult, Alignment.Center);
 
-            if (dist(Player.Ppos, goo.pos) < 6) {
+            if (dist(Player.Ppos, goo.pos) < 10) {
                 collectgoosfx.Play();
                 ammo+=(ushort)(totalammo-collammo+1);
                 collammo = totalammo;
                 hasgoo = false;
                 lastgootime = Time.TotalTime;
+                gooalt.pos = goo.pos;
+                gooalt.spawntime = Time.TotalTime;
+
+                for (int i = 0; i < ammos.Count; i++)
+                    ammosalt.Add(new() { pos = ammos[i].pos, spawntime = Time.TotalTime });
             }
         }
 
@@ -61,6 +67,17 @@
 
             for (int i = 0; i < totalammo; i++)
                 ammos.Add(new() { pos = new Vector2(r.Next(12, 228), r.Next(12, 100)), spawntime = Time.TotalTime + (float)r.NextDouble()/6f });
+        }
+
+        for (int i = 0; i < ammosalt.Count; i++) {
+            float scalemult = 1-easeinback(Time.TotalTime-ammosalt[i].spawntime);
+            c.DrawTexture(ammotex, new(ammosalt[i].pos + new Vector2(-1, sin(Time.TotalTime * 3 + i * 4) * 3 + 1), new Vector2(6, 8) * scalemult, Alignment.Center), shadowcol);
+            c.DrawTexture(ammotex, ammosalt[i].pos + new Vector2(0, sin(Time.TotalTime * 3 + i * 4) * 3), new Vector2(6, 8) * scalemult, Alignment.Center);
+
+            if (Time.TotalTime >= ammosalt[i].spawntime + .5f) {
+                ammosalt.RemoveAt(i);
+                i--;
+            }
         }
 
         Player.Drawplayer(c);

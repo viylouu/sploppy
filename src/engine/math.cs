@@ -9,4 +9,5 @@
     static float pow(float a, float b) => MathF.Pow(a, b);
     static float clamp(float a, float b, float c) => Math.Clamp(a, b, c);
     static float max(float a, float b) => MathF.Max(a, b);
+    static float min(float a, float b) => MathF.Min(a, b);
 }

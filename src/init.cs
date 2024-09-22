@@ -22,6 +22,7 @@
         collectgoosfx = Audio.LoadSound(@"assets\audio\collectgoo.wav");
 
         ammos = new List<collectible>();
+        ammosalt = new List<collectible>();
 
         totalammo = (byte)r.Next(3,5);
 
