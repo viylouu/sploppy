@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="assets\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="SimulationFramework" Version="0.3.0-alpha.6" />
     <PackageReference Include="SimulationFramework.Desktop" Version="0.3.0-alpha.6" />
     <PackageReference Include="SimulationFramework.OpenGL" Version="0.3.0-alpha.6" />
@@ -34,6 +30,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="assets\fonts\font.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\logo\logo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="assets\sprites\ammo.png">
