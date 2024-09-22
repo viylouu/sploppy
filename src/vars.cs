@@ -12,7 +12,9 @@ partial class sploppy {
 
     //textures
     static ITexture sploppertex;
+    static ITexture flippedsploppertex;
     static ITexture guntex;
+    static ITexture flippedguntex;
     static ITexture cloudstex;
     static ITexture bgtex;
     static ITexture ammotex;

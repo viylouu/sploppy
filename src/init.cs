@@ -8,7 +8,9 @@
         dfont = genfont(dfonttex, " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz");
 
         sploppertex = Graphics.LoadTexture(@"assets\sprites\splopper.png");
+        flippedsploppertex = Graphics.LoadTexture(@"assets\sprites\splopperflipped.png");
         guntex = Graphics.LoadTexture(@"assets\sprites\gun.png");
+        flippedguntex = Graphics.LoadTexture(@"assets\sprites\gunflipped.png");
         bgtex = Graphics.LoadTexture(@"assets\sprites\bg.png");
         cloudstex = Graphics.LoadTexture(@"assets\sprites\clouds.png");
         ammotex = Graphics.LoadTexture(@"assets\sprites\ammo.png");

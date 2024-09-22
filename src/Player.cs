@@ -13,6 +13,8 @@
 
         static bool canmove = false;
 
+        static bool right = true;
+
         public static void Updateplayer() {
             if(canmove && !gameover) {
                 //Update Position
@@ -36,28 +38,37 @@
             }
 
             //Input
-            if (!gameover)
-                if (ammo > 0 && (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space)))
-                    { Pvel = -Vector2.Normalize(Mouse.Position - Ppos) * gunforce; ammo--; shootsfx.Play(); canmove = true; }
-                else if (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space))
-                    shootnoammosfx.Play();
+            if (ammo > 0 && (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space))) {
+                Vector2 ldir = -Vector2.Normalize(Mouse.Position - Ppos);
+                Pvel = ldir * gunforce; 
+                ammo--; 
+                shootsfx.Play(); 
+                canmove = true;
+                right = ldir.X > 0;
+            }
+            else if (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space))
+                shootnoammosfx.Play();
         }
 
         public static void Drawplayer(ICanvas canvas) {
             // Drawing the Player
             canvas.DrawTexture(sploppertex, new(Ppos.X-1, Ppos.Y+1, 8,6, Alignment.Center), shadowcol);
-            canvas.DrawTexture(sploppertex, Ppos ,Alignment.Center);
+
+            if(right)
+                canvas.DrawTexture(sploppertex, Ppos ,Alignment.Center);
+            else
+                canvas.DrawTexture(flippedsploppertex, Ppos, Alignment.Center);
 
             canvas.Translate(Ppos.X-1, Ppos.Y+1);
             canvas.Rotate(atan2(Vector2.Normalize(Mouse.Position - Ppos)));
             canvas.Translate(8, 0);
-            canvas.DrawTexture(guntex, new(Vector2.Zero, new(16,8*(Mouse.Position.X<Ppos.X?-1:1)),Alignment.CenterLeft), shadowcol);
+            canvas.DrawTexture(Mouse.Position.X<Ppos.X?flippedguntex:guntex, new(Vector2.Zero, new(16,8), Alignment.CenterLeft), shadowcol);
             canvas.ResetState();
 
             canvas.Translate(Ppos);
             canvas.Rotate(atan2(Vector2.Normalize(Mouse.Position-Ppos)));
             canvas.Translate(8,0);
-            canvas.DrawTexture(guntex, Vector2.Zero, new(16, 8*(Mouse.Position.X<Ppos.X?-1:1)), Alignment.CenterLeft);
+            canvas.DrawTexture(Mouse.Position.X<Ppos.X?flippedguntex:guntex, Vector2.Zero, new(16, 8), Alignment.CenterLeft);
             canvas.ResetState();
         }
     }
