@@ -20,29 +20,32 @@
         rendertext(c, dfont, Player.Score + "", new Vector2(119, 4), shadowcol);
         rendertext(c, dfont, Player.Score + "", new Vector2(120, 3), Color.White);
 
-        for (int i = 0; i < ammoposses.Count; i++) {
-            c.DrawTexture(ammotex, new (ammoposses[i] + new Vector2(-1,sin(Time.TotalTime*3+i*4)*3+1), new Vector2(6,8), Alignment.Center), shadowcol);
-            c.DrawTexture(ammotex, ammoposses[i] + new Vector2(0,sin(Time.TotalTime*3+i*4)*3), new Vector2(6,8), Alignment.Center);
+        for (int i = 0; i < ammos.Count; i++) {
+            float scalemult = easeoutelastic(Time.TotalTime-ammos[i].spawntime);
+            c.DrawTexture(ammotex, new (ammos[i].pos + new Vector2(-1,sin(Time.TotalTime*3+i*4)*3+1), new Vector2(6,8)*scalemult, Alignment.Center), shadowcol);
+            c.DrawTexture(ammotex, ammos[i].pos + new Vector2(0,sin(Time.TotalTime*3+i*4)*3), new Vector2(6,8)*scalemult, Alignment.Center);
 
-            if (dist(Player.Ppos, ammoposses[i]) < 6) {
+            if (dist(Player.Ppos, ammos[i].pos) < 6) {
                 collectammosfx.Play();
                 ammo++;
                 collammo++;
-                ammoposses.RemoveAt(i);
+                ammos.RemoveAt(i);
                 i--;
             }
         }
 
         if (!hasgoo && lastgootime + goospawntime <= Time.TotalTime) {
-            goopos = new Vector2(r.Next(12, 228), r.Next(12, 100));
+            goo.pos = new Vector2(r.Next(12, 228), r.Next(12, 100));
+            goo.spawntime = Time.TotalTime + (float)r.NextDouble()/6f;
             hasgoo = true;
         }
 
         if (hasgoo) {
-            c.DrawTexture(gootex, new (goopos + new Vector2(-1,sin(Time.TotalTime*3)*3+1), new Vector2(8,8), Alignment.Center), shadowcol);
-            c.DrawTexture(gootex, goopos + new Vector2(0,sin(Time.TotalTime*3)*3), new Vector2(8,8), Alignment.Center);
+            float scalemult = easeoutelastic(Time.TotalTime-goo.spawntime);
+            c.DrawTexture(gootex, new (goo.pos + new Vector2(-1,sin(Time.TotalTime*3)*3+1), new Vector2(8,8)*scalemult, Alignment.Center), shadowcol);
+            c.DrawTexture(gootex, goo.pos + new Vector2(0,sin(Time.TotalTime*3)*3), new Vector2(8,8)*scalemult, Alignment.Center);
 
-            if (dist(Player.Ppos, goopos) < 12) {
+            if (dist(Player.Ppos, goo.pos) < 6) {
                 collectgoosfx.Play();
                 ammo+=(ushort)(totalammo-collammo+1);
                 collammo = totalammo;
@@ -52,12 +55,12 @@
         }
 
         if (collammo == totalammo) {
-            ammoposses.Clear();
+            ammos.Clear();
             totalammo = (byte)r.Next(3, 5);
             collammo = 0;
 
             for (int i = 0; i < totalammo; i++)
-                ammoposses.Add(new Vector2(r.Next(12, 228), r.Next(12, 100)));
+                ammos.Add(new() { pos = new Vector2(r.Next(12, 228), r.Next(12, 100)), spawntime = Time.TotalTime + (float)r.NextDouble()/6f });
         }
 
         Player.Drawplayer(c);

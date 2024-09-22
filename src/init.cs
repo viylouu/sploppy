@@ -21,12 +21,12 @@
         collectammosfx = Audio.LoadSound(@"assets\audio\collectammo.wav");
         collectgoosfx = Audio.LoadSound(@"assets\audio\collectgoo.wav");
 
-        ammoposses = new List<Vector2>();
+        ammos = new List<collectible>();
 
         totalammo = (byte)r.Next(3,5);
 
         for (int i = 0; i < totalammo; i++)
-            ammoposses.Add(new Vector2(r.Next(12, 228), r.Next(12, 100)));
+                ammos.Add(new() { pos = new Vector2(r.Next(12, 228), r.Next(12, 100)), spawntime = Time.TotalTime + (float)r.NextDouble()/6f });
 
         lastgootime = Time.TotalTime;
         starttime = Time.TotalTime;

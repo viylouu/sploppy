@@ -27,16 +27,17 @@ partial class sploppy {
     static ISound collectgoosfx;
 
     //bg
-    static float bgscrollspeed = 240 / 8f;
+    const float bgscrollspeed = 240 / 8f;
 
     //gameplay
     static ushort ammo = 10;
-    static List<Vector2> ammoposses;
+    static List<collectible> ammos;
     static byte totalammo;
     static byte collammo;
 
-    static Vector2 goopos;
+    static collectible goo = new();
     static bool hasgoo = false;
     static float lastgootime = 0;
     static float goospawntime = 6;
+    const float spawnanimtime = .75f;
 }
