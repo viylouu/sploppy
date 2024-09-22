@@ -15,6 +15,11 @@
         c.DrawTexture(cloudstex, -Time.TotalTime * bgscrollspeed % 240, 0, Alignment.TopLeft);
         c.DrawTexture(cloudstex, -Time.TotalTime * bgscrollspeed % 240 + 240, 0, Alignment.TopLeft);
 
+        rendertext(c, dfont, ammo + " ammo", new Vector2(3, 4), shadowcol);
+        rendertext(c, dfont, ammo + " ammo", new Vector2(4, 3), Color.White);
+        rendertext(c, dfont, Player.Score + "", new Vector2(119, 4), shadowcol);
+        rendertext(c, dfont, Player.Score + "", new Vector2(120, 3), Color.White);
+
         for (int i = 0; i < ammoposses.Count; i++) {
             c.DrawTexture(ammotex, new (ammoposses[i] + new Vector2(-1,sin(Time.TotalTime*3+i*4)*3+1), new Vector2(6,8), Alignment.Center), shadowcol);
             c.DrawTexture(ammotex, ammoposses[i] + new Vector2(0,sin(Time.TotalTime*3+i*4)*3), new Vector2(6,8), Alignment.Center);
@@ -56,9 +61,6 @@
         }
 
         Player.Drawplayer(c);
-        rendertext(c, dfont, ammo + " ammo", new Vector2(2,4), shadowcol);
-        rendertext(c, dfont, ammo + " ammo", new Vector2(3,3), Color.White);
-        rendertext(c, dfont, Player.Score + "", new Vector2(119, 4), shadowcol);
-        rendertext(c, dfont, Player.Score + "", new Vector2(120, 3), Color.White);
+        
     }
 }
