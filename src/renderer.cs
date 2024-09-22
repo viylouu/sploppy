@@ -38,8 +38,8 @@ partial class sploppy {
         //UI
         rendertext(c, dfont, ammo + " ammo", new Vector2(3, 4), shadowcol);
         rendertext(c, dfont, ammo + " ammo", new Vector2(4, 3), Color.White);
-        rendertext(c, dfont, Player.Score + "", new Vector2(119, 4), shadowcol);
-        rendertext(c, dfont, Player.Score + "", new Vector2(120, 3), Color.White);
+        rendertext(c, dfont, Player.Score + "", new Vector2(236-predicttextwidth(dfont,Player.Score+""), 4), shadowcol);
+        rendertext(c, dfont, Player.Score + "", new Vector2(237-predicttextwidth(dfont, Player.Score + ""), 3), Color.White);
 
         //Spawn ammo
         for (int i = 0; i < ammos.Count; i++) {
