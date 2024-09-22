@@ -16,38 +16,42 @@
         static bool right = true;
 
         public static void Updateplayer() {
-            if(canmove && !gameover) {
+            if(canmove) {
                 //Update Position
                 Ppos += Pvel * Time.DeltaTime;
 
-                //Bounce
-                if (Ppos.Y < 3) { Pvel.Y = abs(Pvel.Y); Ppos.Y = 3; }
-                if (Ppos.X < 4) { Pvel.X = abs(Pvel.X); Ppos.X = 4; }
-                if (Ppos.X > 236) { Pvel.X = -abs(Pvel.X); Ppos.X = 236; }
+                if(!gameover) {
+                    //Bounce
+                    if (Ppos.Y < 3) { Pvel.Y = abs(Pvel.Y); Ppos.Y = 3; }
+                    if (Ppos.X < 4) { Pvel.X = abs(Pvel.X); Ppos.X = 4; }
+                    if (Ppos.X > 236) { Pvel.X = -abs(Pvel.X); Ppos.X = 236; }
 
-                //Lose State
-                if (Ppos.Y > 135) gameover = true;
+                    //Lose State
+                    if (Ppos.Y > 135) { gameover = true; timeofdeath = Time.TotalTime; }
 
-                //Score
-                Score = (uint)MathF.Floor((Time.TotalTime-starttime)*4);
+                    //Score
+                    Score = (uint)MathF.Floor((Time.TotalTime-starttime)*4);
 
-                //Gravity
-                Pvel.Y += gravity * Time.DeltaTime;
-                if (Pvel.X > 0) Pvel.X -= drag * Time.DeltaTime;
-                else if(Pvel.X < 0) Pvel.X += drag * Time.DeltaTime;
+                    //Gravity
+                    Pvel.Y += gravity * Time.DeltaTime;
+                    if (Pvel.X > 0) Pvel.X -= drag * Time.DeltaTime;
+                    else if(Pvel.X < 0) Pvel.X += drag * Time.DeltaTime;
+                }
             }
 
-            //Input
-            if (ammo > 0 && (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space))) {
-                Vector2 ldir = -Vector2.Normalize(Mouse.Position - Ppos);
-                Pvel = ldir * gunforce; 
-                ammo--; 
-                shootsfx.Play(); 
-                canmove = true;
-                right = ldir.X > 0;
+            if(!gameover) {
+                //Input
+                if (ammo > 0 && (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space))) {
+                    Vector2 ldir = -Vector2.Normalize(Mouse.Position - Ppos);
+                    Pvel = ldir * gunforce; 
+                    ammo--; 
+                    shootsfx.Play(); 
+                    canmove = true;
+                    right = ldir.X > 0;
+                }
+                else if (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space))
+                    shootnoammosfx.Play();
             }
-            else if (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space))
-                shootnoammosfx.Play();
         }
 
         public static void Drawplayer(ICanvas canvas) {
