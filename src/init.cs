@@ -4,6 +4,8 @@
 
         Simulation.SetFixedResolution(240, 135, Color.Black, false, false, true);
 
+        ITexture logo = Graphics.LoadTexture(@"assets\logo\logo.png");
+
         dfonttex = Graphics.LoadTexture(@"assets\fonts\font.png");
         dfont = genfont(dfonttex, " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz");
 
@@ -33,5 +35,7 @@
 
         lastgootime = Time.TotalTime;
         starttime = Time.TotalTime;
+
+        Window.SetIcon(logo);
     }
 }
