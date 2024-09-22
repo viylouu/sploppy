@@ -40,6 +40,7 @@ partial class sploppy {
     static collectible goo = new();
     static collectible gooalt = new();
     static bool hasgoo = false;
+    static bool hasgooalt = false;
     static float lastgootime = 0;
     static float goospawntime = 6;
 }

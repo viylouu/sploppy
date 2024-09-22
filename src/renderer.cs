@@ -51,6 +51,7 @@
                 ammo+=(ushort)(totalammo-collammo+1);
                 collammo = totalammo;
                 hasgoo = false;
+                hasgooalt = true;
                 lastgootime = Time.TotalTime;
                 gooalt.pos = goo.pos;
                 gooalt.spawntime = Time.TotalTime;
@@ -70,14 +71,23 @@
         }
 
         for (int i = 0; i < ammosalt.Count; i++) {
-            float scalemult = 1-easeinback(Time.TotalTime-ammosalt[i].spawntime);
+            float scalemult = 1-easeinback(2*(Time.TotalTime-ammosalt[i].spawntime));
             c.DrawTexture(ammotex, new(ammosalt[i].pos + new Vector2(-1, sin(Time.TotalTime * 3 + i * 4) * 3 + 1), new Vector2(6, 8) * scalemult, Alignment.Center), shadowcol);
             c.DrawTexture(ammotex, ammosalt[i].pos + new Vector2(0, sin(Time.TotalTime * 3 + i * 4) * 3), new Vector2(6, 8) * scalemult, Alignment.Center);
 
-            if (Time.TotalTime >= ammosalt[i].spawntime + .5f) {
+            if (Time.TotalTime >= ammosalt[i].spawntime+.5f) {
                 ammosalt.RemoveAt(i);
                 i--;
             }
+        }
+
+        if (hasgooalt) { 
+            float scalemult = 1-easeinback(2*(Time.TotalTime-gooalt.spawntime));
+            c.DrawTexture(gootex, new(gooalt.pos + new Vector2(-1, sin(Time.TotalTime * 3) * 3 + 1), new Vector2(8, 8) * scalemult, Alignment.Center), shadowcol);
+            c.DrawTexture(gootex, gooalt.pos + new Vector2(0, sin(Time.TotalTime * 3) * 3), new Vector2(8, 8) * scalemult, Alignment.Center);
+
+            if (Time.TotalTime >= gooalt.spawntime+.5f)
+                hasgooalt = false;
         }
 
         Player.Drawplayer(c);
