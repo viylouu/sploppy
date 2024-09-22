@@ -2,8 +2,8 @@
 
 partial class sploppy {
     public class Player {
-        const int gravity = 48;
-        const int Drag = 2;
+        const byte gravity = 48;
+        const byte Drag = 32;
 
         static Vector2 Ppos = new Vector2(100, 20);
         static Vector2 Pvel = new Vector2(0, 0);
@@ -12,11 +12,23 @@ partial class sploppy {
             //Update Position
             Ppos += Pvel * Time.DeltaTime;
 
+            //Bounce
+            if (Ppos.Y < 3) Pvel.Y = -Pvel.Y;
+            if (Ppos.X < 4 || Ppos.X > 236) Pvel.X = -Pvel.X;
+
             //Gravity
             Pvel.Y += gravity * Time.DeltaTime;
+            if(Pvel.X > 0)
+            {
+                Pvel.X -= Drag * Time.DeltaTime;
+            }
+            else if(Pvel.X < 0)
+            {
+                Pvel.X += Drag * Time.DeltaTime;
+            }
 
             //Input
-            if (Keyboard.IsKeyPressed(Key.E)) Pvel.Y = -64;
+            if (Mouse.IsButtonPressed(MouseButton.Left)) Pvel = -Vector2.Normalize(Mouse.Position - Ppos) * 80;
         }
 
         public static void Drawplayer(ICanvas canvas) {
