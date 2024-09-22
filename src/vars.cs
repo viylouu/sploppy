@@ -6,6 +6,8 @@ partial class sploppy {
     static ColorF shadowcol = new ColorF(0,0,0,.25f);
     static float starttime;
     static float timeofdeath;
+    const byte gravity = 82;
+    static bool gameover;
 
     //font
     static ITexture dfonttex;
@@ -28,6 +30,9 @@ partial class sploppy {
     static ISound shootnoammosfx;
     static ISound collectammosfx;
     static ISound collectgoosfx;
+    static ISound windsfx;
+    static SoundPlayback windsfxpb;
+    static ISound gameoversfx;
 
     //bg
     const float bgscrollspeed = 240 / 8f;

@@ -1,6 +1,5 @@
 ﻿partial class sploppy {
     public class Player {
-        const byte gravity = 82;
         const byte drag = 24;
         const byte gunforce = 112;
 
@@ -9,11 +8,9 @@
         public static Vector2 Ppos = new Vector2(120, 64);
         static Vector2 Pvel = Vector2.Zero;
 
-        public static bool gameover;
+        public static bool canmove = false;
 
-        static bool canmove = false;
-
-        static bool right = true;
+        public static bool right = true;
 
         public static void Updateplayer() {
             if(canmove) {
@@ -27,7 +24,20 @@
                     if (Ppos.X > 236) { Pvel.X = -abs(Pvel.X); Ppos.X = 236; }
 
                     //Lose State
-                    if (Ppos.Y > 135) { gameover = true; timeofdeath = Time.TotalTime; }
+                    if (Ppos.Y > 135) { 
+                        gameover = true; 
+                        timeofdeath = Time.TotalTime; 
+                        gameoversfx.Play();
+                        for (int i = 0; i < ammos.Count; i++)
+                            ammosalt.Add(new() { pos = ammos[i].pos, spawntime = Time.TotalTime, vely = -72f });
+                        ammos.Clear();
+                        hasgoo = false;
+                        hasgooalt = true;
+                        lastgootime = Time.TotalTime;
+                        gooalt.pos = goo.pos;
+                        gooalt.spawntime = Time.TotalTime;
+                        gooalt.vely = -72f;
+                    }
 
                     //Score
                     Score = (uint)MathF.Floor((Time.TotalTime-starttime)*4);

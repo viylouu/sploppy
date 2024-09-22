@@ -24,6 +24,9 @@
         shootnoammosfx = Audio.LoadSound(@"assets\audio\shootnoammo.wav");
         collectammosfx = Audio.LoadSound(@"assets\audio\collectammo.wav");
         collectgoosfx = Audio.LoadSound(@"assets\audio\collectgoo.wav");
+        windsfx = Audio.LoadSound(@"assets\audio\wind.wav");
+        windsfxpb = windsfx.Loop();
+        gameoversfx = Audio.LoadSound(@"assets\audio\gameover.wav");
 
         ammos = new List<collectible>();
         ammosalt = new List<collectible>();
@@ -31,7 +34,7 @@
         totalammo = (byte)r.Next(3,5);
 
         for (int i = 0; i < totalammo; i++)
-                ammos.Add(new() { pos = new Vector2(r.Next(12, 228), r.Next(12, 100)), spawntime = Time.TotalTime + (float)r.NextDouble()/6f });
+            ammos.Add(new() { pos = new Vector2(r.Next(12, 228), r.Next(12, 100)), spawntime = Time.TotalTime + (float)r.NextDouble()/6f });
 
         lastgootime = Time.TotalTime;
         starttime = Time.TotalTime;
