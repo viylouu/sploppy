@@ -112,6 +112,8 @@ partial class sploppy {
 
         //Game Over
         if (gameover) {
+            rendertext(c, dfont, "Press m to go to the menu", new Vector2(120 - predicttextwidth(dfont, "Press m to go to the menu") / 2f - 1, round(67.5f + 67.5f * (1 - easeoutback((Time.TotalTime - timeofdeath) / 2f))) + 17 - dfont.charh), shadowcol);
+            rendertext(c, dfont, "Press m to go to the menu", new Vector2(120 - predicttextwidth(dfont, "Press m to go to the menu") / 2f, round(67.5f + 67.5f * (1 - easeoutback((Time.TotalTime - timeofdeath) / 2f))) + 16 - dfont.charh), Color.White);
             rendertext(c,dfont, "Press r to restart", new Vector2(120-predicttextwidth(dfont, "Press r to restart")/2f-1,round(67.5f+67.5f*(1-easeoutback((Time.TotalTime-timeofdeath)/2f)))+9-dfont.charh), shadowcol);
             rendertext(c,dfont, "Press r to restart", new Vector2(120-predicttextwidth(dfont, "Press r to restart")/2f,round(67.5f+67.5f*(1-easeoutback((Time.TotalTime-timeofdeath)/2f)))+8-dfont.charh),Color.White);
             rendertext(c,dfont,"Game Over",new Vector2(98,round(67.5f+67.5f*(1-easeoutback((Time.TotalTime-timeofdeath)/2f)))+1-dfont.charh), shadowcol);
@@ -128,6 +130,20 @@ partial class sploppy {
                     ammos.Add(new() { pos = new Vector2(r.Next(12, 228), r.Next(12, 100)), spawntime = Time.TotalTime + (float)r.NextDouble() / 6f });
                 lastgootime = Time.TotalTime;
                 starttime = Time.TotalTime;
+            }
+
+            if (Keyboard.IsKeyPressed(Key.M)) {
+                gameover = false;
+                Player.Ppos = new Vector2(120, 64);
+                Player.canmove = false;
+                Player.right = true;
+                ammo = 10;
+                totalammo = (byte)r.Next(3, 5);
+                for (int i = 0; i < totalammo; i++)
+                    ammos.Add(new() { pos = new Vector2(r.Next(12, 228), r.Next(12, 100)), spawntime = Time.TotalTime + (float)r.NextDouble() / 6f });
+                lastgootime = Time.TotalTime;
+                starttime = Time.TotalTime;
+                menu = true;
             }
         }
     }

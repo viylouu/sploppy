@@ -27,6 +27,7 @@
         windsfx = Audio.LoadSound(@"assets\audio\wind.wav");
         windsfxpb = windsfx.Loop();
         gameoversfx = Audio.LoadSound(@"assets\audio\gameover.wav");
+        startgamesfx = Audio.LoadSound(@"assets\audio\start.wav");
 
         ammos = new List<collectible>();
         ammosalt = new List<collectible>();

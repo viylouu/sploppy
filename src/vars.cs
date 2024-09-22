@@ -33,6 +33,7 @@ partial class sploppy {
     static ISound windsfx;
     static SoundPlayback windsfxpb;
     static ISound gameoversfx;
+    static ISound startgamesfx;
 
     //bg
     const float bgscrollspeed = 240 / 8f;

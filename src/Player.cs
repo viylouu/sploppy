@@ -58,6 +58,13 @@
                     shootsfx.Play(); 
                     canmove = true;
                     right = ldir.X > 0;
+
+                    if (menu) {
+                        startgamesfx.Play();
+                        starttime = Time.TotalTime;
+                    }
+
+                    menu = false;
                 }
                 else if (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space))
                     shootnoammosfx.Play();
