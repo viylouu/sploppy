@@ -28,6 +28,24 @@
             }
         }
 
+        if (!hasgoo && lastgootime + goospawntime <= Time.TotalTime) {
+            goopos = new Vector2(r.Next(12, 228), r.Next(12, 100));
+            hasgoo = true;
+        }
+
+        if (hasgoo) {
+            c.DrawTexture(gootex, new (goopos + new Vector2(-1,sin(Time.TotalTime*3)*3+1), new Vector2(8,8), Alignment.Center), shadowcol);
+            c.DrawTexture(gootex, goopos + new Vector2(0,sin(Time.TotalTime*3)*3), new Vector2(8,8), Alignment.Center);
+
+            if (dist(Player.Ppos, goopos) < 12) {
+                collectgoosfx.Play();
+                ammo+=(ushort)(totalammo-collammo+1);
+                collammo = totalammo;
+                hasgoo = false;
+                lastgootime = Time.TotalTime;
+            }
+        }
+
         if (collammo == totalammo) {
             ammoposses.Clear();
             totalammo = (byte)r.Next(3, 5);
