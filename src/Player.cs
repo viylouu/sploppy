@@ -6,30 +6,34 @@
 
         public static uint Score;
 
-        public static Vector2 Ppos = new Vector2(120, 24);
+        public static Vector2 Ppos = new Vector2(120, 64);
         static Vector2 Pvel = Vector2.Zero;
 
+        static bool canmove = false;
+
         public static void Updateplayer() {
-            //Update Position
-            Ppos += Pvel * Time.DeltaTime;
+            if(canmove) {
+                //Update Position
+                Ppos += Pvel * Time.DeltaTime;
 
-            //Bounce
-            if (Ppos.Y < 3) { Pvel.Y = abs(Pvel.Y); Ppos.Y = 3; }
-            if (Ppos.X < 4) { Pvel.X = abs(Pvel.X); Ppos.X = 4; }
-            if (Ppos.X > 236) { Pvel.X = -abs(Pvel.X); Ppos.X = 236; }
+                //Bounce
+                if (Ppos.Y < 3) { Pvel.Y = abs(Pvel.Y); Ppos.Y = 3; }
+                if (Ppos.X < 4) { Pvel.X = abs(Pvel.X); Ppos.X = 4; }
+                if (Ppos.X > 236) { Pvel.X = -abs(Pvel.X); Ppos.X = 236; }
 
-            //Score
-            Score = (uint)MathF.Floor((Time.TotalTime-starttime)*4);
+                //Score
+                Score = (uint)MathF.Floor((Time.TotalTime-starttime)*4);
 
-            //Gravity
-            Pvel.Y += gravity * Time.DeltaTime;
+                //Gravity
+                Pvel.Y += gravity * Time.DeltaTime;
 
-            if(Pvel.X > 0) Pvel.X -= drag * Time.DeltaTime;
-            else if(Pvel.X < 0) Pvel.X += drag * Time.DeltaTime;
+                if(Pvel.X > 0) Pvel.X -= drag * Time.DeltaTime;
+                else if(Pvel.X < 0) Pvel.X += drag * Time.DeltaTime;
+            }
 
             //Input
             if (ammo > 0 && (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space)))
-            { Pvel = -Vector2.Normalize(Mouse.Position - Ppos) * gunforce; ammo--; shootsfx.Play(); }
+            { Pvel = -Vector2.Normalize(Mouse.Position - Ppos) * gunforce; ammo--; shootsfx.Play(); canmove = true; }
             else if (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space))
                 shootnoammosfx.Play();
         }
