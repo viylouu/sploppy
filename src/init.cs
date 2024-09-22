@@ -4,5 +4,7 @@
 
         dfonttex = Graphics.LoadTexture(@"assets\fonts\font.png");
         dfont = genfont(dfonttex, " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz");
+
+        Simulation.SetFixedResolution(240,135,Color.Black,false,false,true);
     }
 }
