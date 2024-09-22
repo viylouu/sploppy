@@ -26,6 +26,24 @@
         return font;
     }
 
+    static int predicttextwidth(font f, string text) {
+        int w = 0;
+        for (int i = 0; i < text.Length; i++) { 
+            if (text[i] == ' ')
+                w += f.data[f.chars.IndexOf(' ')].width;
+            else {
+                int ch = f.chars.IndexOf(text[i]);
+
+                if (ch == -1)
+                    w += f.data[f.chars.IndexOf(' ')].width;
+                else
+                    w += f.data[f.chars.IndexOf(text[i])].width;
+            }
+        }
+
+        return w-1;
+    }
+
     static void rendertext(ICanvas c, font f, string text, Vector2 pos, Color col) {
         int x = 0;
         for (int i = 0; i < text.Length; i++) {
