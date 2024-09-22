@@ -20,6 +20,7 @@
         darkcloudstex = Graphics.LoadTexture(@"assets\sprites\darkclouds.png");
         bghardtex = Graphics.LoadTexture(@"assets\sprites\bghard.png");
         bgmastertex = Graphics.LoadTexture(@"assets\sprites\bgmaster.png");
+        raintex = Graphics.LoadTexture(@"assets\sprites\rain.png");
 
         music = Audio.LoadSound(@"assets\audio\song.wav");
         musicpb = music.Loop();
@@ -34,6 +35,7 @@
 
         ammos = new List<collectible>();
         ammosalt = new List<collectible>();
+        rainposses = new List<Vector2>();
 
         totalammo = (byte)r.Next(3,5);
 
@@ -44,5 +46,7 @@
         starttime = Time.TotalTime;
 
         Window.SetIcon(logo);
+
+        lastraintime = Time.TotalTime;
     }
 }

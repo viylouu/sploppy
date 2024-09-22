@@ -1,7 +1,6 @@
 ﻿partial class sploppy {
     public class Player {
         const byte drag = 24;
-        const byte gunforce = 112;
 
         public static uint Score;
 

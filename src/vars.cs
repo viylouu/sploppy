@@ -6,10 +6,22 @@ partial class sploppy {
     static ColorF shadowcol = new ColorF(0,0,0,.25f);
     static float starttime;
     static float timeofdeath;
-    const byte gravity = 82;
     static bool gameover;
     static byte diff = 1;
     const float bgscrollspeed = 240 / 8f;
+
+    //player stuff
+    static byte gravity = 82;
+    static byte gunforce = 112;
+
+    //rain
+    static float rainspeed = 1024;
+    static List<Vector2> rainposses;
+    static float lastraintime;
+    static float rainspawnfreq = .006125f;
+    static float raindir = 11*pi/6f;
+    static float pid4 = pi / 4f;
+    static float pid2pd4 = pi / 2f + pid4;
 
     //font
     static ITexture dfonttex;
@@ -27,6 +39,7 @@ partial class sploppy {
     static ITexture darkcloudstex;
     static ITexture bghardtex;
     static ITexture bgmastertex;
+    static ITexture raintex;
 
     //audio
     static ISound music;

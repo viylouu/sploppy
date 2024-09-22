@@ -126,6 +126,28 @@ partial class sploppy {
         //Player
         Player.Drawplayer(c);
 
+        //rain
+        if (diff > 1) {
+            if (Time.TotalTime >= lastraintime + rainspawnfreq) {
+                rainposses.Add(new Vector2(r.Next(0, 360), -16));
+                lastraintime = Time.TotalTime;
+            }
+
+            for (int i = 0; i < rainposses.Count; i++) {
+                c.Translate(rainposses[i]);
+                c.Rotate(raindir+pid4);
+                c.DrawTexture(raintex, 0, 0, 1, 32, Alignment.Center);
+                c.ResetState();
+
+                rainposses[i] += new Vector2(cos(raindir+pid2pd4),sin(raindir+pid2pd4))*rainspeed*Time.DeltaTime;
+
+                if (rainposses[i].Y > Window.Height + 16) {
+                    rainposses.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+
         mainmenu.DrawMenu(c);
 
         //Game Over
