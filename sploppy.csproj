@@ -82,4 +82,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="src\Shaders\" />
+  </ItemGroup>
+
 </Project>
