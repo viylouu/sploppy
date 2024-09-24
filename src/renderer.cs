@@ -88,7 +88,7 @@ partial class sploppy {
         //More BOOLET
         if (collammo == totalammo) {
             ammos.Clear();
-            totalammo = (byte)r.Next(3, 5);
+            totalammo = (byte)r.Next(minammo, maxammo);
             collammo = 0;
 
             for (int i = 0; i < totalammo; i++)
@@ -163,7 +163,7 @@ partial class sploppy {
                 Player.canmove = false;
                 Player.right = true;
                 ammo = 10;
-                totalammo = (byte)r.Next(3, 5);
+                totalammo = (byte)r.Next(minammo, maxammo);
                 for (int i = 0; i < totalammo; i++)
                     ammos.Add(new() { pos = new Vector2(r.Next(12, 228), r.Next(12, 100)), spawntime = Time.TotalTime + (float)r.NextDouble() / 6f });
                 lastgootime = Time.TotalTime;

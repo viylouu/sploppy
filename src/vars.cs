@@ -56,6 +56,8 @@ partial class sploppy {
     //ammo
     static ushort ammo = 10;
     static List<collectible> ammos;
+    static byte maxammo;
+    static byte minammo;
     static byte totalammo;
     static byte collammo;
     static List<collectible> ammosalt;

@@ -3,11 +3,32 @@
         public static void Updatemenu() {
             if(!Player.canmove) {
                 if (Keyboard.IsKeyPressed(Key.Key1))
+                {
                     diff = 1;
-                if(Keyboard.IsKeyPressed(Key.Key2))
+                    gravity = 82;
+                    gunforce = 112;
+                    ammo = 10;
+                    maxammo = 5;
+                    minammo = 3;
+                }
+                if (Keyboard.IsKeyPressed(Key.Key2)) 
+                { 
                     diff = 2;
+                    gravity = 134;
+                    gunforce = 112;
+                    ammo = 5;
+                    maxammo = 7;
+                    minammo = 4;
+                }
                 if (Keyboard.IsKeyPressed(Key.Key3))
+                {
                     diff = 3;
+                    gravity = 184;
+                    gunforce = 112;
+                    ammo = 3;
+                    maxammo = 10;
+                    minammo = 6;
+                }
             }
         }
 
