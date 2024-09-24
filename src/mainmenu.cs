@@ -2,34 +2,47 @@
     public class mainmenu {
         public static void Updatemenu() {
             if(!Player.canmove) {
-                if (Keyboard.IsKeyPressed(Key.Key1))
-                {
+                if (Keyboard.IsKeyPressed(Key.Key1)) {
                     diff = 1;
                     gravity = 82;
                     gunforce = 112;
-                    ammo = 10;
+                    startammo = 10;
                     maxammo = 5;
                     minammo = 3;
+                    spawnanotherammo();
                 }
-                if (Keyboard.IsKeyPressed(Key.Key2)) 
-                { 
+                if (Keyboard.IsKeyPressed(Key.Key2))  { 
                     diff = 2;
                     gravity = 134;
                     gunforce = 112;
-                    ammo = 5;
+                    startammo = 5;
                     maxammo = 7;
                     minammo = 4;
+                    spawnanotherammo();
                 }
-                if (Keyboard.IsKeyPressed(Key.Key3))
-                {
+                if (Keyboard.IsKeyPressed(Key.Key3)) {
                     diff = 3;
                     gravity = 184;
                     gunforce = 112;
-                    ammo = 3;
+                    startammo = 3;
                     maxammo = 10;
                     minammo = 6;
+                    spawnanotherammo();
                 }
+
+                ammo = startammo;
+                lastgootime = Time.TotalTime;
+                starttime = Time.TotalTime;
             }
+        }
+
+        static void spawnanotherammo() {
+            for (int i = 0; i < ammos.Count; i++)
+                ammosalt.Add(new() { pos = ammos[i].pos, spawntime = Time.TotalTime, vely = -72f });
+            ammos.Clear();
+            totalammo = (byte)r.Next(minammo, maxammo);
+            for (int i = 0; i < totalammo; i++)
+                ammos.Add(new() { pos = new Vector2(r.Next(12, 228), r.Next(12, 100)), spawntime = Time.TotalTime + (float)r.NextDouble() / 6f });
         }
 
         public static void DrawMenu(ICanvas c) {

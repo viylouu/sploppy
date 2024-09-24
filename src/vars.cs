@@ -54,6 +54,7 @@ partial class sploppy {
     static ISound startgamesfx;
 
     //ammo
+    static byte startammo;
     static ushort ammo = 10;
     static List<collectible> ammos;
     static byte maxammo;

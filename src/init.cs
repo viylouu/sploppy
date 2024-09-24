@@ -48,5 +48,13 @@
         Window.SetIcon(logo);
 
         lastraintime = Time.TotalTime;
+
+        diff = 1;
+        gravity = 82;
+        gunforce = 112;
+        ammo = 10;
+        maxammo = 5;
+        minammo = 3;
+        startammo = 10;
     }
 }
