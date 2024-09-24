@@ -14,6 +14,11 @@ partial class sploppy {
     static bool debug = false;
     static bool showtraj = false;
 
+    //bot
+    static bool bot = false;
+    static bool travelling = false;
+    static float lasttraveltime = 0;
+
     //player stuff
     static byte gravity = 82;
     static byte gunforce = 112;

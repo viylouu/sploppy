@@ -11,4 +11,5 @@
     static float max(float a, float b) => MathF.Max(a, b);
     static float min(float a, float b) => MathF.Min(a, b);
     static float cos(float a) => MathF.Cos(a);
+    static float torad(float a) => a * (pi / 180f);
 }

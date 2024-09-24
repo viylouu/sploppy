@@ -1,4 +1,6 @@
-﻿partial class sploppy {
+﻿using NAudio.Wave.Compression;
+
+partial class sploppy {
     public class Player {
         const byte drag = 24;
 
@@ -45,6 +47,10 @@
                     Pvel.Y += gravity * Time.DeltaTime;
                     if (Pvel.X > 0) Pvel.X -= drag * Time.DeltaTime;
                     else if(Pvel.X < 0) Pvel.X += drag * Time.DeltaTime;
+
+                    if (bot && ammo > 0) {
+                        bottick();
+                    }
                 }
             }
 
@@ -65,6 +71,147 @@
                 }
                 else if (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space))
                     shootnoammosfx.Play();
+            }
+        }
+
+        static void bottick() { 
+            List<Vector2> traj = new List<Vector2>();
+
+            Vector2 _ppos = Ppos;
+            Vector2 _pvel = Pvel;
+            float delta = 1f / 20;
+            float frames = 1f / delta;
+            int dirs = 360 / 18;
+
+            List<int> ammostouched = new List<int>();
+            int[] ammocounts = new int[dirs+1];
+            bool[] gootouched = new bool[dirs];
+
+            for (int i = 0; i < frames; i++) {
+                _ppos += _pvel * delta;
+
+                if (_ppos.Y < 3) { _pvel.Y = abs(_pvel.Y); _ppos.Y = 3; }
+                if (_ppos.X < 4) { _pvel.X = abs(_pvel.X); _ppos.X = 4; }
+                if (_ppos.X > 236) { _pvel.X = -abs(_pvel.X); _ppos.X = 236; }
+
+                _pvel.Y += gravity * delta;
+                if (_pvel.X > 0) _pvel.X -= drag * delta;
+                else if (_pvel.X < 0) _pvel.X += drag * delta;
+
+                traj.Add(_ppos);
+
+                for (int j = 0; j < ammos.Count; j++)
+                    if(!ammostouched.Contains(j))
+                        if (dist(ammos[j].pos, _ppos) < 8) {
+                            ammostouched.Add(j);
+                            ammocounts[0]++;
+                        }
+
+                if (hasgoo)
+                    if (dist(goo.pos, _ppos) < 10)
+                        return;
+            }
+
+            for (int d = 0; d < dirs; d++) {
+                ammostouched.Clear();
+                traj.Clear();
+
+                _ppos = Ppos;
+                _pvel = -new Vector2(cos(torad(d*18)), sin(torad(d*18))) * gunforce;
+
+                for (int i = 0; i < frames; i++) {
+                    _ppos += _pvel * delta;
+
+                    if (_ppos.Y < 3) { _pvel.Y = abs(_pvel.Y); _ppos.Y = 3; }
+                    if (_ppos.X < 4) { _pvel.X = abs(_pvel.X); _ppos.X = 4; }
+                    if (_ppos.X > 236) { _pvel.X = -abs(_pvel.X); _ppos.X = 236; }
+
+                    _pvel.Y += gravity * delta;
+                    if (_pvel.X > 0) _pvel.X -= drag * delta;
+                    else if (_pvel.X < 0) _pvel.X += drag * delta;
+
+                    traj.Add(_ppos);
+
+                    for (int j = 0; j < ammos.Count; j++)
+                        if(!ammostouched.Contains(j))
+                            if (dist(ammos[j].pos, _ppos) < 8) {
+                                ammostouched.Add(j);
+                                ammocounts[d+1]++;
+                            }
+
+                    if (!gootouched[d] && hasgoo)
+                        if (dist(goo.pos, _ppos) < 10)
+                            gootouched[d] = true;
+                }
+            }
+
+            int maxval=0, maxi=-1;
+
+            for (int i = 0; i < ammocounts.Length; i++)
+                if (ammocounts[i] > maxval) {
+                    maxval = ammocounts[i];
+                    maxi = i-1;
+                }
+
+            if(maxval != 0) {
+                if (maxi != -1) { 
+                    Vector2 ldir = -new Vector2(cos(torad(maxi*18)), sin(torad(maxi*18)));
+                    Pvel = ldir * gunforce; 
+                    ammo--;
+                    shootsfx.Play(); 
+                    if (!canmove) {
+                        startgamesfx.Play();
+                        starttime = Time.TotalTime;
+                        ++ammo;
+                    }
+                    canmove = true;
+                    right = ldir.X > 0;
+                }
+                travelling = false;
+            } else if(!travelling || lasttraveltime <= Time.TotalTime - 1.25f) {
+                int leftammos = 0;
+                int rightammos = 0;
+
+                for (int i = 0; i < ammos.Count; i++) {
+                    if (ammos[i].pos.X > _ppos.X)
+                        rightammos++;
+                    else
+                        leftammos++;
+                }
+
+                bool right = rightammos > leftammos;
+
+                if (leftammos == rightammos)
+                    right = r.Next(0,2) == 1;
+
+                if (right) { 
+                    Vector2 ldir = Vector2.Normalize(new Vector2(1,-1));
+                    Pvel = ldir * gunforce; 
+                    ammo--;
+                    shootsfx.Play(); 
+                    if (!canmove) {
+                        startgamesfx.Play();
+                        starttime = Time.TotalTime;
+                        ++ammo;
+                    }
+                    canmove = true;
+                    right = true;
+                } else {
+                    Vector2 ldir = Vector2.Normalize(new Vector2(-1,-1));
+                    Pvel = ldir * gunforce; 
+                    ammo--;
+                    shootsfx.Play(); 
+                    if (!canmove) {
+                        startgamesfx.Play();
+                        starttime = Time.TotalTime;
+                        ++ammo;
+                    }
+                    canmove = true;
+                    right = false;
+                }
+
+                travelling = true;
+                lasttraveltime = Time.TotalTime;
             }
         }
 
