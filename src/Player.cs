@@ -58,6 +58,7 @@
                     if (!canmove) {
                         startgamesfx.Play();
                         starttime = Time.TotalTime;
+                        ++ammo;
                     }
                     canmove = true;
                     right = ldir.X > 0;
