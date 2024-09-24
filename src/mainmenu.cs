@@ -8,6 +8,8 @@
                     diff = 2;
                 if (Keyboard.IsKeyPressed(Key.Key3))
                     diff = 3;
+
+                lastgootime = Time.TotalTime;
             }
         }
 
