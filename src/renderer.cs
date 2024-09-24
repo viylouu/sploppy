@@ -49,6 +49,11 @@ partial class sploppy {
             c.DrawTexture(ammotex, new (ammos[i].pos + new Vector2(-1,sin(Time.TotalTime*3+i*4)*3+1), new Vector2(6,8)*scalemult, Alignment.Center), shadowcol);
             c.DrawTexture(ammotex, ammos[i].pos + new Vector2(0,sin(Time.TotalTime*3+i*4)*3), new Vector2(6,8)*scalemult, Alignment.Center);
 
+            if (debug) {
+                c.Stroke(Color.Red);
+                c.DrawCircle(ammos[i].pos, 4);
+            }
+
             if (dist(Player.Ppos, ammos[i].pos) < 8) {
                 collectammosfx.Play();
                 ammo++;
@@ -70,6 +75,11 @@ partial class sploppy {
             float scalemult = easeoutelastic(Time.TotalTime-goo.spawntime);
             c.DrawTexture(gootex, new (goo.pos + new Vector2(-1,sin(Time.TotalTime*3)*3+1), new Vector2(8,8)*scalemult, Alignment.Center), shadowcol);
             c.DrawTexture(gootex, goo.pos + new Vector2(0,sin(Time.TotalTime*3)*3), new Vector2(8,8)*scalemult, Alignment.Center);
+
+            if (debug) {
+                c.Stroke(Color.Red);
+                c.DrawCircle(goo.pos, 6);
+            }
 
             if (dist(Player.Ppos, goo.pos) < 10) {
                 collectgoosfx.Play();

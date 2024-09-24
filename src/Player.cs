@@ -88,6 +88,75 @@
             canvas.Translate(8,0);
             canvas.DrawTexture(Mouse.Position.X<Ppos.X?flippedguntex:guntex, Vector2.Zero, new(16, 8), Alignment.CenterLeft);
             canvas.ResetState();
+
+            if (debug) {
+                canvas.Stroke(Color.Purple);
+                canvas.DrawRect(Ppos, new Vector2(8,6), Alignment.Center);
+                canvas.Stroke(Color.Red);
+                canvas.DrawCircle(Ppos, 4);
+
+                canvas.Stroke(Color.LimeGreen);
+                canvas.DrawLine(Ppos, Ppos+Vector2.Normalize(Mouse.Position - Ppos)*24);
+
+                if(showtraj) {
+                    List<Vector2> traj = new List<Vector2>();
+
+                    Vector2 _ppos = Ppos;
+                    Vector2 _pvel = Pvel;
+                    float delta = 1f / 20;
+
+                    for (int i = 0; i < 40; i++) {
+                        _ppos += _pvel * delta;
+
+                        if (_ppos.Y < 3) { _pvel.Y = abs(_pvel.Y); _ppos.Y = 3; }
+                        if (_ppos.X < 4) { _pvel.X = abs(_pvel.X); _ppos.X = 4; }
+                        if (_ppos.X > 236) { _pvel.X = -abs(_pvel.X); _ppos.X = 236; }
+
+                        _pvel.Y += gravity * delta;
+                        if (_pvel.X > 0) _pvel.X -= drag * delta;
+                        else if (_pvel.X < 0) _pvel.X += drag * delta;
+
+                        traj.Add(_ppos);
+                    }
+
+                    canvas.Stroke(Color.Lime);
+
+                    for (int i = -1; i < traj.Count-1; i++) {
+                        if(i == -1)
+                            canvas.DrawLine(Ppos, traj[0]);
+                        else
+                            canvas.DrawLine(traj[i], traj[i+1]);
+                    }
+
+                    traj.Clear();
+
+                    _ppos = Ppos;
+                    _pvel = -Vector2.Normalize(Mouse.Position - Ppos) * gunforce;
+
+                    for (int i = 0; i < 40; i++) {
+                        _ppos += _pvel * delta;
+
+                        if (_ppos.Y < 3) { _pvel.Y = abs(_pvel.Y); _ppos.Y = 3; }
+                        if (_ppos.X < 4) { _pvel.X = abs(_pvel.X); _ppos.X = 4; }
+                        if (_ppos.X > 236) { _pvel.X = -abs(_pvel.X); _ppos.X = 236; }
+
+                        _pvel.Y += gravity * delta;
+                        if (_pvel.X > 0) _pvel.X -= drag * delta;
+                        else if (_pvel.X < 0) _pvel.X += drag * delta;
+
+                        traj.Add(_ppos);
+                    }
+
+                    canvas.Stroke(Color.Green);
+
+                    for (int i = -1; i < traj.Count-1; i++) {
+                        if(i == -1)
+                            canvas.DrawLine(Ppos, traj[0]);
+                        else
+                            canvas.DrawLine(traj[i], traj[i+1]);
+                    }
+                }
+            }
         }
     }
 }

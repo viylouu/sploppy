@@ -10,6 +10,10 @@ partial class sploppy {
     static byte diff = 1;
     const float bgscrollspeed = 240 / 8f;
 
+    //debug
+    static bool debug = false;
+    static bool showtraj = false;
+
     //player stuff
     static byte gravity = 82;
     static byte gunforce = 112;
