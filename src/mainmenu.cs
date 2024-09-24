@@ -33,6 +33,7 @@
                 ammo = startammo;
                 lastgootime = Time.TotalTime;
                 starttime = Time.TotalTime;
+                collammo = 0;
             }
         }
 
