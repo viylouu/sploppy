@@ -48,9 +48,8 @@ partial class sploppy {
                     if (Pvel.X > 0) Pvel.X -= drag * Time.DeltaTime;
                     else if(Pvel.X < 0) Pvel.X += drag * Time.DeltaTime;
 
-                    if (bot && ammo > 0) {
+                    if (bot && ammo > 0)
                         bottick();
-                    }
                 }
             }
 
@@ -79,13 +78,12 @@ partial class sploppy {
 
             Vector2 _ppos = Ppos;
             Vector2 _pvel = Pvel;
-            float delta = 1f / 20;
+            float delta = 1f / 12;
             float frames = 1f / delta;
             int dirs = 360 / 18;
 
             List<int> ammostouched = new List<int>();
             int[] ammocounts = new int[dirs+1];
-            bool[] gootouched = new bool[dirs];
 
             for (int i = 0; i < frames; i++) {
                 _ppos += _pvel * delta;
@@ -139,9 +137,11 @@ partial class sploppy {
                                 ammocounts[d+1]++;
                             }
 
-                    if (!gootouched[d] && hasgoo)
-                        if (dist(goo.pos, _ppos) < 10)
-                            gootouched[d] = true;
+                    if (hasgoo)
+                        if (dist(goo.pos, _ppos) < 10) {
+                            ammocounts[d+1] = totalammo+1;
+                            break;
+                        }
                 }
             }
 
@@ -168,50 +168,6 @@ partial class sploppy {
                     right = ldir.X > 0;
                 }
                 travelling = false;
-            } else if(!travelling || lasttraveltime <= Time.TotalTime - 1.25f) {
-                int leftammos = 0;
-                int rightammos = 0;
-
-                for (int i = 0; i < ammos.Count; i++) {
-                    if (ammos[i].pos.X > _ppos.X)
-                        rightammos++;
-                    else
-                        leftammos++;
-                }
-
-                bool right = rightammos > leftammos;
-
-                if (leftammos == rightammos)
-                    right = r.Next(0,2) == 1;
-
-                if (right) { 
-                    Vector2 ldir = Vector2.Normalize(new Vector2(1,-1));
-                    Pvel = ldir * gunforce; 
-                    ammo--;
-                    shootsfx.Play(); 
-                    if (!canmove) {
-                        startgamesfx.Play();
-                        starttime = Time.TotalTime;
-                        ++ammo;
-                    }
-                    canmove = true;
-                    right = true;
-                } else {
-                    Vector2 ldir = Vector2.Normalize(new Vector2(-1,-1));
-                    Pvel = ldir * gunforce; 
-                    ammo--;
-                    shootsfx.Play(); 
-                    if (!canmove) {
-                        startgamesfx.Play();
-                        starttime = Time.TotalTime;
-                        ++ammo;
-                    }
-                    canmove = true;
-                    right = false;
-                }
-
-                travelling = true;
-                lasttraveltime = Time.TotalTime;
             }
         }
 
@@ -250,9 +206,9 @@ partial class sploppy {
 
                     Vector2 _ppos = Ppos;
                     Vector2 _pvel = Pvel;
-                    float delta = 1f / 20;
+                    float delta = 1f / 12;
 
-                    for (int i = 0; i < 40; i++) {
+                    for (int i = 0; i < 24; i++) {
                         _ppos += _pvel * delta;
 
                         if (_ppos.Y < 3) { _pvel.Y = abs(_pvel.Y); _ppos.Y = 3; }
@@ -273,6 +229,8 @@ partial class sploppy {
                             canvas.DrawLine(Ppos, traj[0]);
                         else
                             canvas.DrawLine(traj[i], traj[i+1]);
+
+                        canvas.DrawCircle(traj[i+1],1);
                     }
 
                     traj.Clear();
@@ -280,7 +238,7 @@ partial class sploppy {
                     _ppos = Ppos;
                     _pvel = -Vector2.Normalize(Mouse.Position - Ppos) * gunforce;
 
-                    for (int i = 0; i < 40; i++) {
+                    for (int i = 0; i < 24; i++) {
                         _ppos += _pvel * delta;
 
                         if (_ppos.Y < 3) { _pvel.Y = abs(_pvel.Y); _ppos.Y = 3; }
@@ -301,6 +259,8 @@ partial class sploppy {
                             canvas.DrawLine(Ppos, traj[0]);
                         else
                             canvas.DrawLine(traj[i], traj[i+1]);
+
+                        canvas.DrawCircle(traj[i+1],1);
                     }
                 }
             }
