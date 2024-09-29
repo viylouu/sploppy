@@ -38,6 +38,23 @@ partial class sploppy {
                         gooalt.pos = goo.pos;
                         gooalt.spawntime = Time.TotalTime;
                         gooalt.vely = -72f;
+
+                        if (Score > scoredisp) {
+                            switch (diff) {
+                                case 1:
+                                    highscoreRM = Score; break;
+                                case 2:
+                                    highscoreHM = Score; break;
+                                case 3:
+                                    highscoreMM = Score; break;
+                            }
+
+                            using (StreamWriter sw = new(Directory.GetCurrentDirectory() + @"\assets\saves\data.txt")) {
+                                sw.WriteLine(highscoreRM);
+                                sw.WriteLine(highscoreHM);
+                                sw.WriteLine(highscoreMM);
+                            }
+                        }
                     }
 
                     //Score

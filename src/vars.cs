@@ -10,6 +10,9 @@ partial class sploppy {
     static byte diff = 1;
     const float bgscrollspeed = 240 / 8f;
 
+    static uint highscoreRM, highscoreHM, highscoreMM;
+    static uint scoredisp = 0;
+
     //debug
     static bool debug = false;
     static bool showtraj = false;

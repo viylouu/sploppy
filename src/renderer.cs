@@ -20,6 +20,7 @@ partial class sploppy {
                 c.DrawTexture(cloudstex, new(-Time.TotalTime * bgscrollspeed % 240 + 239, 1, 240, 135, Alignment.TopLeft), shadowcol);
                 c.DrawTexture(cloudstex, -Time.TotalTime * bgscrollspeed % 240, 0, Alignment.TopLeft);
                 c.DrawTexture(cloudstex, -Time.TotalTime * bgscrollspeed % 240 + 240, 0, Alignment.TopLeft);
+                scoredisp = highscoreRM;
                 break;
             case 2:
                 c.DrawTexture(bghardtex);
@@ -27,6 +28,7 @@ partial class sploppy {
                 c.DrawTexture(darkcloudstex, new(-Time.TotalTime * bgscrollspeed % 240 + 239, 1, 240, 135, Alignment.TopLeft), shadowcol);
                 c.DrawTexture(darkcloudstex, -Time.TotalTime * bgscrollspeed % 240, 0, Alignment.TopLeft);
                 c.DrawTexture(darkcloudstex, -Time.TotalTime * bgscrollspeed % 240 + 240, 0, Alignment.TopLeft);
+                scoredisp = highscoreHM;
                 break;
             case 3:
                 c.DrawTexture(bgmastertex);
@@ -34,6 +36,7 @@ partial class sploppy {
                 c.DrawTexture(darkcloudstex, new(-Time.TotalTime * bgscrollspeed % 240 + 239, 1, 240, 135, Alignment.TopLeft), shadowcol);
                 c.DrawTexture(darkcloudstex, -Time.TotalTime * bgscrollspeed % 240, 0, Alignment.TopLeft);
                 c.DrawTexture(darkcloudstex, -Time.TotalTime * bgscrollspeed % 240 + 240, 0, Alignment.TopLeft);
+                scoredisp = highscoreMM;
                 break;
         }
 
@@ -42,6 +45,8 @@ partial class sploppy {
         rendertext(c, dfont, ammo + " ammo", new Vector2(4, 3), Color.White);
         rendertext(c, dfont, Player.Score + "", new Vector2(236-predicttextwidth(dfont,Player.Score+""), 4), shadowcol);
         rendertext(c, dfont, Player.Score + "", new Vector2(237-predicttextwidth(dfont, Player.Score + ""), 3), Color.White);
+        rendertext(c, dfont, scoredisp + "", new Vector2(Window.Width/2-predicttextwidth(dfont, scoredisp + "")/2-1,4), shadowcol);
+        rendertext(c, dfont, scoredisp + "", new Vector2(Window.Width/2-predicttextwidth(dfont, scoredisp + "")/2,3), Color.White);
 
         //Spawn ammo
         for (int i = 0; i < ammos.Count; i++) {

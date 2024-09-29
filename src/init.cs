@@ -56,5 +56,14 @@
         maxammo = 5;
         minammo = 3;
         startammo = 10;
+
+        using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + @"\assets\saves\data.txt")) { 
+            string dat = sr.ReadToEnd();
+            string[] dats = dat.Split(Environment.NewLine);
+
+            highscoreRM = Convert.ToUInt32(dats[0]);
+            highscoreHM = Convert.ToUInt32(dats[1]);
+            highscoreMM = Convert.ToUInt32(dats[2]);
+        }
     }
 }
