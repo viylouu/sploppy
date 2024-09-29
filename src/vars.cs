@@ -13,6 +13,8 @@ partial class sploppy {
     static uint highscoreRM, highscoreHM, highscoreMM;
     static uint scoredisp = 0;
 
+    static bool fullscreen = false;
+
     //debug
     static bool debug = false;
     static bool showtraj = false;

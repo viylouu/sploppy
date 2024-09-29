@@ -167,6 +167,15 @@ partial class sploppy {
 
         mainmenu.DrawMenu(c);
 
+        if (Keyboard.IsKeyPressed(Key.F)) {
+            fullscreen = !fullscreen;
+
+            if (fullscreen)
+                Window.EnterFullscreen();
+            else
+                Window.ExitFullscreen();
+        }
+
         //Game Over
         if (gameover) {
             rendertext(c,dfont, "Press r to restart", new Vector2(120-predicttextwidth(dfont, "Press r to restart")/2f-1,round(67.5f+67.5f*(1-easeoutback((Time.TotalTime-timeofdeath)/2f)))+9-dfont.charh), shadowcol);
