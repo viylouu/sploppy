@@ -176,6 +176,9 @@ partial class sploppy {
                 Window.ExitFullscreen();
         }
 
+        if (Keyboard.IsKeyPressed(Key.Escape))
+            Environment.Exit(0);
+
         //Game Over
         if (gameover) {
             rendertext(c,dfont, "Press r to restart", new Vector2(120-predicttextwidth(dfont, "Press r to restart")/2f-1,round(67.5f+67.5f*(1-easeoutback((Time.TotalTime-timeofdeath)/2f)))+9-dfont.charh), shadowcol);
