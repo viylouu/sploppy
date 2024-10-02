@@ -13,7 +13,17 @@ partial class sploppy {
 
         public static bool right = true;
 
+        static Vector2 normgundir;
+        static float atannormgundir;
+
         public static void Updateplayer() {
+            normgundir = Vector2.Normalize(Mouse.Position-Ppos);
+
+            if(normgundir != Vector2.Zero)
+                gunpos += (normgundir*8+Ppos-gunpos) / (6/(Time.DeltaTime*60));
+
+            cursorsize += (1-cursorsize) / (48/(Time.DeltaTime*60));
+
             if(canmove) {
                 //Update Position
                 Ppos += Pvel * Time.DeltaTime;
@@ -84,6 +94,7 @@ partial class sploppy {
                     }
                     canmove = true;
                     right = ldir.X > 0;
+                    cursorsize += .5f;
                 }
                 else if (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space))
                     shootnoammosfx.Play();
@@ -183,8 +194,82 @@ partial class sploppy {
                     }
                     canmove = true;
                     right = ldir.X > 0;
+                    cursorsize += .5f;
                 }
                 travelling = false;
+            }
+        }
+
+        static void playerdebug(ICanvas canvas) { 
+            canvas.Stroke(Color.Purple);
+            canvas.DrawRect(Ppos, new Vector2(8,6), Alignment.Center);
+            canvas.Stroke(Color.Red);
+            canvas.DrawCircle(Ppos, 4);
+
+            canvas.Stroke(Color.LimeGreen);
+            canvas.DrawLine(Ppos, Ppos+Vector2.Normalize(Mouse.Position - Ppos)*24);
+
+            if(showtraj) {
+                List<Vector2> traj = new List<Vector2>();
+
+                Vector2 _ppos = Ppos;
+                Vector2 _pvel = Pvel;
+                float delta = 1f / 12;
+
+                for (int i = 0; i < 24; i++) {
+                    _ppos += _pvel * delta;
+
+                    if (_ppos.Y < 3) { _pvel.Y = abs(_pvel.Y); _ppos.Y = 3; }
+                    if (_ppos.X < 4) { _pvel.X = abs(_pvel.X); _ppos.X = 4; }
+                    if (_ppos.X > 236) { _pvel.X = -abs(_pvel.X); _ppos.X = 236; }
+
+                    _pvel.Y += gravity * delta;
+                    if (_pvel.X > 0) _pvel.X -= drag * delta;
+                    else if (_pvel.X < 0) _pvel.X += drag * delta;
+
+                    traj.Add(_ppos);
+                }
+
+                canvas.Stroke(Color.Lime);
+
+                for (int i = -1; i < traj.Count-1; i++) {
+                    if(i == -1)
+                        canvas.DrawLine(Ppos, traj[0]);
+                    else
+                        canvas.DrawLine(traj[i], traj[i+1]);
+
+                    canvas.DrawCircle(traj[i+1],1);
+                }
+
+                traj.Clear();
+
+                _ppos = Ppos;
+                _pvel = -Vector2.Normalize(Mouse.Position - Ppos) * gunforce;
+
+                for (int i = 0; i < 24; i++) {
+                    _ppos += _pvel * delta;
+
+                    if (_ppos.Y < 3) { _pvel.Y = abs(_pvel.Y); _ppos.Y = 3; }
+                    if (_ppos.X < 4) { _pvel.X = abs(_pvel.X); _ppos.X = 4; }
+                    if (_ppos.X > 236) { _pvel.X = -abs(_pvel.X); _ppos.X = 236; }
+
+                    _pvel.Y += gravity * delta;
+                    if (_pvel.X > 0) _pvel.X -= drag * delta;
+                    else if (_pvel.X < 0) _pvel.X += drag * delta;
+
+                    traj.Add(_ppos);
+                }
+
+                canvas.Stroke(Color.Green);
+
+                for (int i = -1; i < traj.Count-1; i++) {
+                    if(i == -1)
+                        canvas.DrawLine(Ppos, traj[0]);
+                    else
+                        canvas.DrawLine(traj[i], traj[i+1]);
+
+                    canvas.DrawCircle(traj[i+1],1);
+                }
             }
         }
 
@@ -197,90 +282,33 @@ partial class sploppy {
             else
                 canvas.DrawTexture(flippedsploppertex, Ppos, Alignment.Center);
 
-            canvas.Translate(Ppos.X-1, Ppos.Y+1);
-            canvas.Rotate(atan2(Vector2.Normalize(Mouse.Position - Ppos)));
-            canvas.Translate(8, 0);
+            atannormgundir = atan2(normgundir);
+
+            canvas.Translate(gunpos.X-1, gunpos.Y+1);
+            canvas.Rotate(atannormgundir);
             canvas.DrawTexture(Mouse.Position.X<Ppos.X?flippedguntex:guntex, new(Vector2.Zero, new(16,8), Alignment.CenterLeft), shadowcol);
             canvas.ResetState();
 
-            canvas.Translate(Ppos);
-            canvas.Rotate(atan2(Vector2.Normalize(Mouse.Position-Ppos)));
-            canvas.Translate(8,0);
+            canvas.Translate(gunpos);
+            canvas.Rotate(atannormgundir);
             canvas.DrawTexture(Mouse.Position.X<Ppos.X?flippedguntex:guntex, Vector2.Zero, new(16, 8), Alignment.CenterLeft);
             canvas.ResetState();
 
-            if (debug) {
-                canvas.Stroke(Color.Purple);
-                canvas.DrawRect(Ppos, new Vector2(8,6), Alignment.Center);
-                canvas.Stroke(Color.Red);
-                canvas.DrawCircle(Ppos, 4);
+            if (debug)
+                playerdebug(canvas);
 
-                canvas.Stroke(Color.LimeGreen);
-                canvas.DrawLine(Ppos, Ppos+Vector2.Normalize(Mouse.Position - Ppos)*24);
+            canvas.Translate(Mouse.Position.X-1, Mouse.Position.Y+1);
+            canvas.Rotate(Time.TotalTime*4);
+            canvas.DrawTexture(cursoroltex, new Rectangle(0,0, 9*cursorsize, 9*cursorsize, Alignment.Center), shadowcol);
+            canvas.ResetState();
 
-                if(showtraj) {
-                    List<Vector2> traj = new List<Vector2>();
+            canvas.Translate(Mouse.Position);
+            canvas.Rotate(Time.TotalTime*4);
+            canvas.DrawTexture(cursoroltex, Vector2.Zero, Vector2.One*9*cursorsize, Alignment.Center);
+            canvas.ResetState();
 
-                    Vector2 _ppos = Ppos;
-                    Vector2 _pvel = Pvel;
-                    float delta = 1f / 12;
-
-                    for (int i = 0; i < 24; i++) {
-                        _ppos += _pvel * delta;
-
-                        if (_ppos.Y < 3) { _pvel.Y = abs(_pvel.Y); _ppos.Y = 3; }
-                        if (_ppos.X < 4) { _pvel.X = abs(_pvel.X); _ppos.X = 4; }
-                        if (_ppos.X > 236) { _pvel.X = -abs(_pvel.X); _ppos.X = 236; }
-
-                        _pvel.Y += gravity * delta;
-                        if (_pvel.X > 0) _pvel.X -= drag * delta;
-                        else if (_pvel.X < 0) _pvel.X += drag * delta;
-
-                        traj.Add(_ppos);
-                    }
-
-                    canvas.Stroke(Color.Lime);
-
-                    for (int i = -1; i < traj.Count-1; i++) {
-                        if(i == -1)
-                            canvas.DrawLine(Ppos, traj[0]);
-                        else
-                            canvas.DrawLine(traj[i], traj[i+1]);
-
-                        canvas.DrawCircle(traj[i+1],1);
-                    }
-
-                    traj.Clear();
-
-                    _ppos = Ppos;
-                    _pvel = -Vector2.Normalize(Mouse.Position - Ppos) * gunforce;
-
-                    for (int i = 0; i < 24; i++) {
-                        _ppos += _pvel * delta;
-
-                        if (_ppos.Y < 3) { _pvel.Y = abs(_pvel.Y); _ppos.Y = 3; }
-                        if (_ppos.X < 4) { _pvel.X = abs(_pvel.X); _ppos.X = 4; }
-                        if (_ppos.X > 236) { _pvel.X = -abs(_pvel.X); _ppos.X = 236; }
-
-                        _pvel.Y += gravity * delta;
-                        if (_pvel.X > 0) _pvel.X -= drag * delta;
-                        else if (_pvel.X < 0) _pvel.X += drag * delta;
-
-                        traj.Add(_ppos);
-                    }
-
-                    canvas.Stroke(Color.Green);
-
-                    for (int i = -1; i < traj.Count-1; i++) {
-                        if(i == -1)
-                            canvas.DrawLine(Ppos, traj[0]);
-                        else
-                            canvas.DrawLine(traj[i], traj[i+1]);
-
-                        canvas.DrawCircle(traj[i+1],1);
-                    }
-                }
-            }
+            canvas.DrawTexture(cursortex, new Rectangle(Mouse.Position.X-1, Mouse.Position.Y+1, 9,9, Alignment.Center), shadowcol);
+            canvas.DrawTexture(cursortex, Mouse.Position, Alignment.Center);
         }
     }
 }

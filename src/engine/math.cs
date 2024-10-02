@@ -12,4 +12,5 @@
     static float min(float a, float b) => MathF.Min(a, b);
     static float cos(float a) => MathF.Cos(a);
     static float torad(float a) => a * (pi / 180f);
+    static Vector2 round(Vector2 a) => new(round(a.X),round(a.Y));
 }

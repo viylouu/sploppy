@@ -9,11 +9,10 @@ partial class sploppy {
     static bool gameover;
     static byte diff = 1;
     const float bgscrollspeed = 240 / 8f;
-
     static uint highscoreRM, highscoreHM, highscoreMM;
     static uint scoredisp = 0;
-
     static bool fullscreen = false;
+    static float cursorsize = 1;
 
     //debug
     static bool debug = false;
@@ -27,6 +26,8 @@ partial class sploppy {
     //player stuff
     static byte gravity = 82;
     static byte gunforce = 112;
+    static Vector2 gunpos;
+    static float gunrot;
 
     //rain
     static float rainspeed = 1024;
@@ -54,6 +55,9 @@ partial class sploppy {
     static ITexture bghardtex;
     static ITexture bgmastertex;
     static ITexture raintex;
+    static ITexture shelltex;
+    static ITexture cursoroltex;
+    static ITexture cursortex;
 
     //audio
     static ISound music;
@@ -76,6 +80,9 @@ partial class sploppy {
     static byte totalammo;
     static byte collammo;
     static List<collectible> ammosalt;
+
+    //shells
+    static List<particle> shells;
 
     //goo
     static collectible goo = new();

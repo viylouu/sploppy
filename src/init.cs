@@ -21,6 +21,9 @@
         bghardtex = Graphics.LoadTexture(@"assets\sprites\bghard.png");
         bgmastertex = Graphics.LoadTexture(@"assets\sprites\bgmaster.png");
         raintex = Graphics.LoadTexture(@"assets\sprites\rain.png");
+        shelltex = Graphics.LoadTexture(@"assets\sprites\shell.png");
+        cursoroltex = Graphics.LoadTexture(@"assets\sprites\cursor outline.png");
+        cursortex = Graphics.LoadTexture(@"assets\sprites\cursor.png");
 
         music = Audio.LoadSound(@"assets\audio\song.wav");
         musicpb = music.Loop();
