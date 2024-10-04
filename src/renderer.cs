@@ -1,7 +1,4 @@
-﻿using Silk.NET.OpenGL;
-using SimulationFramework.Drawing.Shaders;
-
-partial class sploppy {
+﻿partial class sploppy {
     static void rend(ICanvas c) {
 
         //Update
@@ -9,36 +6,49 @@ partial class sploppy {
 
         mainmenu.Updatemenu();
 
+        //camera shake effect
+        camshake = new Vector2((float)r.NextDouble()*2-1,(float)r.NextDouble()*2-1)/((Time.TotalTime-lastshoottime)*.5f)*.125f;
+
         //Draw Calls
         c.Clear(Color.CornflowerBlue);
 
-        //BG and Clouds
         switch(diff) {
             case 1:
-                c.DrawTexture(bgtex);
-                c.DrawTexture(cloudstex, new(-Time.TotalTime * bgscrollspeed % 240 - 1, 1, 240, 135, Alignment.TopLeft), shadowcol);
-                c.DrawTexture(cloudstex, new(-Time.TotalTime * bgscrollspeed % 240 + 239, 1, 240, 135, Alignment.TopLeft), shadowcol);
-                c.DrawTexture(cloudstex, -Time.TotalTime * bgscrollspeed % 240, 0, Alignment.TopLeft);
-                c.DrawTexture(cloudstex, -Time.TotalTime * bgscrollspeed % 240 + 240, 0, Alignment.TopLeft);
+                darkclouds = false;
                 scoredisp = highscoreRM;
+                bggrad.col1 = bggradc1RM;
+                bggrad.col2 = bggradc2RM;
+                bggrad.darkcol = new Color(75,91,171).ToColorF();
+                bggrad.lightcol = new Color(255,255,235).ToColorF();
                 break;
             case 2:
-                c.DrawTexture(bghardtex);
-                c.DrawTexture(darkcloudstex, new(-Time.TotalTime * bgscrollspeed % 240 - 1, 1, 240, 135, Alignment.TopLeft), shadowcol);
-                c.DrawTexture(darkcloudstex, new(-Time.TotalTime * bgscrollspeed % 240 + 239, 1, 240, 135, Alignment.TopLeft), shadowcol);
-                c.DrawTexture(darkcloudstex, -Time.TotalTime * bgscrollspeed % 240, 0, Alignment.TopLeft);
-                c.DrawTexture(darkcloudstex, -Time.TotalTime * bgscrollspeed % 240 + 240, 0, Alignment.TopLeft);
+                darkclouds = true;
                 scoredisp = highscoreHM;
+                bggrad.col1 = bggradc1HM;
+                bggrad.col2 = bggradc2HM;
+                bggrad.darkcol = new Color(115,39,92).ToColorF();
+                bggrad.lightcol = new Color(255,145,102).ToColorF();
                 break;
             case 3:
-                c.DrawTexture(bgmastertex);
-                c.DrawTexture(darkcloudstex, new(-Time.TotalTime * bgscrollspeed % 240 - 1, 1, 240, 135, Alignment.TopLeft), shadowcol);
-                c.DrawTexture(darkcloudstex, new(-Time.TotalTime * bgscrollspeed % 240 + 239, 1, 240, 135, Alignment.TopLeft), shadowcol);
-                c.DrawTexture(darkcloudstex, -Time.TotalTime * bgscrollspeed % 240, 0, Alignment.TopLeft);
-                c.DrawTexture(darkcloudstex, -Time.TotalTime * bgscrollspeed % 240 + 240, 0, Alignment.TopLeft);
+                darkclouds = true;
                 scoredisp = highscoreMM;
+                bggrad.col1 = bggradc1MM;
+                bggrad.col2 = bggradc2MM;
+                bggrad.darkcol = new Color(90,38,94).ToColorF();
+                bggrad.lightcol = new Color(255,107,151).ToColorF();
                 break;
         }
+
+        bggrad.startpos = round(bggradsp-camshake);
+        bggrad.endpos = round(bggradep-camshake);
+
+        c.Fill(bggrad);
+        c.DrawRect(0,0,240,135);
+
+        c.DrawTexture(darkclouds?darkcloudstex:cloudstex, new(-Time.TotalTime * bgscrollspeed % 240 - 1-camshake.X, 1-camshake.Y, 240, 135, Alignment.TopLeft), shadowcol);
+        c.DrawTexture(darkclouds?darkcloudstex:cloudstex, new(-Time.TotalTime * bgscrollspeed % 240 + 239-camshake.X, 1-camshake.Y, 240, 135, Alignment.TopLeft), shadowcol);
+        c.DrawTexture(darkclouds?darkcloudstex:cloudstex, -Time.TotalTime * bgscrollspeed % 240-camshake.X, -camshake.Y, Alignment.TopLeft);
+        c.DrawTexture(darkclouds?darkcloudstex:cloudstex, -Time.TotalTime * bgscrollspeed % 240 + 240-camshake.X, -camshake.Y, Alignment.TopLeft);
 
         //UI
         rendertext(c, dfont, ammo + " ammo", new Vector2(3, 4), shadowcol);
@@ -51,8 +61,8 @@ partial class sploppy {
         //Spawn ammo
         for (int i = 0; i < ammos.Count; i++) {
             float scalemult = easeoutelastic(Time.TotalTime-ammos[i].spawntime);
-            c.DrawTexture(ammotex, new (ammos[i].pos + new Vector2(-1,sin(Time.TotalTime*3+i*4)*3+1), new Vector2(6,8)*scalemult, Alignment.Center), shadowcol);
-            c.DrawTexture(ammotex, ammos[i].pos + new Vector2(0,sin(Time.TotalTime*3+i*4)*3), new Vector2(6,8)*scalemult, Alignment.Center);
+            c.DrawTexture(ammotex, new (ammos[i].pos + new Vector2(-1,sin(Time.TotalTime*3+i*4)*3+1)-camshake, new Vector2(6,8)*scalemult, Alignment.Center), shadowcol);
+            c.DrawTexture(ammotex, ammos[i].pos + new Vector2(0,sin(Time.TotalTime*3+i*4)*3)-camshake, new Vector2(6,8)*scalemult, Alignment.Center);
 
             if (debug) {
                 c.Stroke(Color.Red);
@@ -66,6 +76,7 @@ partial class sploppy {
                 ammosalt.Add(new() { pos = ammos[i].pos, spawntime = Time.TotalTime, vely = -72f });
                 ammos.RemoveAt(i);
                 i--;
+                cursorsize += .75f;
             }
         }
         //Move my goo
@@ -78,8 +89,8 @@ partial class sploppy {
         //Consume Goo
         if (hasgoo) {
             float scalemult = easeoutelastic(Time.TotalTime-goo.spawntime);
-            c.DrawTexture(gootex, new (goo.pos + new Vector2(-1,sin(Time.TotalTime*3)*3+1), new Vector2(8,8)*scalemult, Alignment.Center), shadowcol);
-            c.DrawTexture(gootex, goo.pos + new Vector2(0,sin(Time.TotalTime*3)*3), new Vector2(8,8)*scalemult, Alignment.Center);
+            c.DrawTexture(gootex, new (goo.pos + new Vector2(-1,sin(Time.TotalTime*3)*3+1)-camshake, new Vector2(8,8)*scalemult, Alignment.Center), shadowcol);
+            c.DrawTexture(gootex, goo.pos + new Vector2(0,sin(Time.TotalTime*3)*3)-camshake, new Vector2(8,8)*scalemult, Alignment.Center);
 
             if (debug) {
                 c.Stroke(Color.Red);
@@ -96,6 +107,7 @@ partial class sploppy {
                 gooalt.pos = goo.pos;
                 gooalt.spawntime = Time.TotalTime;
                 gooalt.vely = -72f;
+                cursorsize += sqr((totalammo-collammo+1)*1.25f);
 
                 for (int i = 0; i < ammos.Count; i++)
                     ammosalt.Add(new() { pos = ammos[i].pos, spawntime = Time.TotalTime, vely = -72f });
@@ -115,8 +127,8 @@ partial class sploppy {
         //The boolets
         for (int i = 0; i < ammosalt.Count; i++) {
             float scalemult = 1-easeinback(2*(Time.TotalTime-ammosalt[i].spawntime));
-            c.DrawTexture(ammotex, new(ammosalt[i].pos + new Vector2(-1, sin(Time.TotalTime * 3 + i * 4) * 3 + 1), new Vector2(6, 8) * scalemult, Alignment.Center), shadowcol);
-            c.DrawTexture(ammotex, ammosalt[i].pos + new Vector2(0, sin(Time.TotalTime * 3 + i * 4) * 3), new Vector2(6, 8) * scalemult, Alignment.Center);
+            c.DrawTexture(ammotex, new(ammosalt[i].pos + new Vector2(-1, sin(Time.TotalTime * 3 + i * 4) * 3 + 1)-camshake, new Vector2(6, 8) * scalemult, Alignment.Center), shadowcol);
+            c.DrawTexture(ammotex, ammosalt[i].pos + new Vector2(0, sin(Time.TotalTime * 3 + i * 4) * 3)-camshake, new Vector2(6, 8) * scalemult, Alignment.Center);
 
             ammosalt[i].vely += Time.DeltaTime * gravity;
             ammosalt[i].pos += new Vector2(0, ammosalt[i].vely * Time.DeltaTime);
@@ -130,8 +142,8 @@ partial class sploppy {
         //The Goo
         if (hasgooalt) { 
             float scalemult = 1-easeinback(2*(Time.TotalTime-gooalt.spawntime));
-            c.DrawTexture(gootex, new(gooalt.pos + new Vector2(-1, sin(Time.TotalTime * 3) * 3 + 1), new Vector2(8, 8) * scalemult, Alignment.Center), shadowcol);
-            c.DrawTexture(gootex, gooalt.pos + new Vector2(0, sin(Time.TotalTime * 3) * 3), new Vector2(8, 8) * scalemult, Alignment.Center);
+            c.DrawTexture(gootex, new(gooalt.pos + new Vector2(-1, sin(Time.TotalTime * 3) * 3 + 1)-camshake, new Vector2(8, 8) * scalemult, Alignment.Center), shadowcol);
+            c.DrawTexture(gootex, gooalt.pos + new Vector2(0, sin(Time.TotalTime * 3) * 3)-camshake, new Vector2(8, 8) * scalemult, Alignment.Center);
 
             gooalt.vely += Time.DeltaTime * gravity;
             gooalt.pos += new Vector2(0, gooalt.vely * Time.DeltaTime);
@@ -151,7 +163,7 @@ partial class sploppy {
             }
 
             for (int i = 0; i < rainposses.Count; i++) {
-                c.Translate(rainposses[i]);
+                c.Translate(rainposses[i]-camshake);
                 c.Rotate(raindir+pid4);
                 c.DrawTexture(raintex, 0, 0, 1, 32, Alignment.Center);
                 c.ResetState();

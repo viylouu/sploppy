@@ -17,12 +17,17 @@ partial class sploppy {
         static float atannormgundir;
 
         public static void Updateplayer() {
-            normgundir = Vector2.Normalize(Mouse.Position-Ppos);
+            if(Mouse.Position != Ppos)
+                normgundir = Vector2.Normalize(Mouse.Position-Ppos);
 
-            if(normgundir != Vector2.Zero)
-                gunpos += (normgundir*8+Ppos-gunpos) / (6/(Time.DeltaTime*60));
+            if(Mouse.Position != Ppos)
+                gunpos += (normgundir*8+Ppos-gunpos) / (5/(Time.DeltaTime*60));
 
             cursorsize += (1-cursorsize) / (48/(Time.DeltaTime*60));
+
+            atannormgundir = atan2(normgundir);
+
+            gunrot = Angle.Lerp(gunrot, atannormgundir, clamp(2.5f/Time.DeltaTime,0,1));
 
             if(canmove) {
                 //Update Position
@@ -95,6 +100,7 @@ partial class sploppy {
                     canmove = true;
                     right = ldir.X > 0;
                     cursorsize += .5f;
+                    lastshoottime = Time.TotalTime;
                 }
                 else if (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space))
                     shootnoammosfx.Play();
@@ -275,22 +281,20 @@ partial class sploppy {
 
         public static void Drawplayer(ICanvas canvas) {
             // Drawing the Player
-            canvas.DrawTexture(sploppertex, new(Ppos.X-1, Ppos.Y+1, 8,6, Alignment.Center), shadowcol);
+            canvas.DrawTexture(sploppertex, new(Ppos.X-1-camshake.X, Ppos.Y+1-camshake.Y, 8,6, Alignment.Center), shadowcol);
 
             if(right)
-                canvas.DrawTexture(sploppertex, Ppos ,Alignment.Center);
+                canvas.DrawTexture(sploppertex, Ppos-camshake, Alignment.Center);
             else
-                canvas.DrawTexture(flippedsploppertex, Ppos, Alignment.Center);
+                canvas.DrawTexture(flippedsploppertex, Ppos-camshake, Alignment.Center);
 
-            atannormgundir = atan2(normgundir);
-
-            canvas.Translate(gunpos.X-1, gunpos.Y+1);
-            canvas.Rotate(atannormgundir);
+            canvas.Translate(gunpos.X-1-camshake.X, gunpos.Y+1-camshake.Y);
+            canvas.Rotate(gunrot);
             canvas.DrawTexture(Mouse.Position.X<Ppos.X?flippedguntex:guntex, new(Vector2.Zero, new(16,8), Alignment.CenterLeft), shadowcol);
             canvas.ResetState();
 
-            canvas.Translate(gunpos);
-            canvas.Rotate(atannormgundir);
+            canvas.Translate(gunpos-camshake);
+            canvas.Rotate(gunrot);
             canvas.DrawTexture(Mouse.Position.X<Ppos.X?flippedguntex:guntex, Vector2.Zero, new(16, 8), Alignment.CenterLeft);
             canvas.ResetState();
 

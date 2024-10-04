@@ -14,9 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SimulationFramework" Version="0.3.0-alpha.6" />
-    <PackageReference Include="SimulationFramework.Desktop" Version="0.3.0-alpha.6" />
-    <PackageReference Include="SimulationFramework.OpenGL" Version="0.3.0-alpha.6" />
+    <PackageReference Include="SimulationFramework" Version="0.3.0-alpha.7" />
+    <PackageReference Include="SimulationFramework.Desktop" Version="0.3.0-alpha.7" />
+    <PackageReference Include="SimulationFramework.OpenGL" Version="0.3.0-alpha.7" />
   </ItemGroup>
 
   <ItemGroup>
@@ -98,6 +98,10 @@
     <None Update="assets\sprites\splopperflipped.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="src\engine\shaders\" />
   </ItemGroup>
 
 </Project>

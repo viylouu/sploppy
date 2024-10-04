@@ -4,91 +4,59 @@ partial class sploppy {
     //misc
     static Random r = new Random();
     static ColorF shadowcol = new ColorF(0,0,0,.25f);
-    static float starttime;
-    static float timeofdeath;
-    static bool gameover;
+    static float starttime, timeofdeath, cursorsize = 1;
+    static bool gameover, fullscreen, darkclouds;
     static byte diff = 1;
     const float bgscrollspeed = 240 / 8f;
-    static uint highscoreRM, highscoreHM, highscoreMM;
-    static uint scoredisp = 0;
-    static bool fullscreen = false;
-    static float cursorsize = 1;
+    static uint highscoreRM, highscoreHM, highscoreMM, scoredisp = 0;
+    static Vector2 camshake;
+    static float lastshoottime = 0;
+
+    //bg grad
+    static dithergradient bggrad = new();
+    static ColorF bggradc1RM = new Color(77,166,255).ToColorF(), bggradc2RM = new Color(102,255,227).ToColorF(),
+                  bggradc1HM = new Color(176,48,92).ToColorF(), bggradc2HM = new Color(235,86,75).ToColorF(),
+                  bggradc1MM = new Color(128,54,107).ToColorF(), bggradc2MM = new Color(189,72,130).ToColorF();
+    static Vector2 bggradsp = new(0,135), bggradep = new(240,0);
 
     //debug
-    static bool debug = false;
-    static bool showtraj = false;
+    static bool debug = false, showtraj = false;
 
     //bot
-    static bool bot = false;
-    static bool travelling = false;
+    static bool bot = false, travelling = false;
     static float lasttraveltime = 0;
 
     //player stuff
-    static byte gravity = 82;
-    static byte gunforce = 112;
+    static byte gravity = 82, gunforce = 112;
     static Vector2 gunpos;
     static float gunrot;
 
     //rain
-    static float rainspeed = 1024;
     static List<Vector2> rainposses;
-    static float lastraintime;
-    static float rainspawnfreq = .006125f;
-    static float raindir = 11*pi/6f;
-    static float pid4 = pi / 4f;
-    static float pid2pd4 = pi / 2f + pid4;
+    static float lastraintime, rainspeed = 1024, rainspawnfreq = .006125f, raindir = 11*pi/6f, pid4 = pi/4f, pid2pd4 = pi / 2f + pid4;
 
     //font
     static ITexture dfonttex;
     static font dfont;
 
     //textures
-    static ITexture sploppertex;
-    static ITexture flippedsploppertex;
-    static ITexture guntex;
-    static ITexture flippedguntex;
-    static ITexture cloudstex;
-    static ITexture bgtex;
-    static ITexture ammotex;
-    static ITexture gootex;
-    static ITexture darkcloudstex;
-    static ITexture bghardtex;
-    static ITexture bgmastertex;
-    static ITexture raintex;
-    static ITexture shelltex;
-    static ITexture cursoroltex;
-    static ITexture cursortex;
+    static ITexture sploppertex,flippedsploppertex,guntex,flippedguntex,cloudstex,bgtex,ammotex,gootex,darkcloudstex,bghardtex,bgmastertex,raintex,
+                    shelltex,cursoroltex,cursortex;
 
     //audio
-    static ISound music;
-    static SoundPlayback musicpb;
-    static ISound shootsfx;
-    static ISound shootnoammosfx;
-    static ISound collectammosfx;
-    static ISound collectgoosfx;
-    static ISound windsfx;
-    static SoundPlayback windsfxpb;
-    static ISound gameoversfx;
-    static ISound startgamesfx;
+    static ISound music,shootsfx,shootnoammosfx,collectammosfx,collectgoosfx,windsfx,gameoversfx,startgamesfx;
+    static SoundPlayback musicpb,windsfxpb;
 
     //ammo
-    static byte startammo;
     static ushort ammo = 10;
-    static List<collectible> ammos;
-    static byte maxammo;
-    static byte minammo;
-    static byte totalammo;
-    static byte collammo;
-    static List<collectible> ammosalt;
+    static List<collectible> ammos,ammosalt;
+    static byte startammo,maxammo,minammo,totalammo,collammo;
 
     //shells
     static List<particle> shells;
 
     //goo
-    static collectible goo = new();
-    static collectible gooalt = new();
-    static bool hasgoo = false;
-    static bool hasgooalt = false;
-    static float lastgootime = 0;
-    static float goospawntime = 6;
+    static collectible goo = new(), gooalt = new();
+    static bool hasgoo, hasgooalt;
+    static float lastgootime, goospawntime = 6;
 }
