@@ -9,8 +9,11 @@ partial class sploppy {
     static byte diff = 1;
     const float bgscrollspeed = 240 / 8f;
     static uint highscoreRM, highscoreHM, highscoreMM, scoredisp = 0;
+
+    //camerashake
     static Vector2 camshake;
-    static float lastshoottime = 0;
+    static Vector2 camv /*vel*/, camep /*equilibrium pos*/;
+    const float camk = 400 /*stiff*/, camb = 10000 /*damping*/, camm = 1 /*mass*/;
 
     //bg grad
     static dithergradient bggrad = new();

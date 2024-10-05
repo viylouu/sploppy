@@ -100,7 +100,8 @@ partial class sploppy {
                     canmove = true;
                     right = ldir.X > 0;
                     cursorsize += .5f;
-                    lastshoottime = Time.TotalTime;
+                    camshake += ldir*6;
+                    camv += ldir*6;
                 }
                 else if (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space))
                     shootnoammosfx.Play();

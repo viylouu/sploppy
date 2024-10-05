@@ -7,11 +7,16 @@
         mainmenu.Updatemenu();
 
         //camera shake effect
-        camshake = new Vector2((float)r.NextDouble()*2-1,(float)r.NextDouble()*2-1)/((Time.TotalTime-lastshoottime)*.5f)*.125f;
+        Vector2 cforce = -camk*camshake;
+        Vector2 cdamp = -camb*camv*Time.DeltaTime;
+        Vector2 caccel = (cforce+cdamp)/camm;
+        camv += caccel * Time.DeltaTime;
+        camshake += camv * Time.DeltaTime;
 
-        //Draw Calls
+        //clear background
         c.Clear(Color.CornflowerBlue);
 
+        //detect and set background properties
         switch(diff) {
             case 1:
                 darkclouds = false;
@@ -42,6 +47,7 @@
         bggrad.startpos = round(bggradsp-camshake);
         bggrad.endpos = round(bggradep-camshake);
 
+        //draw backround
         c.Fill(bggrad);
         c.DrawRect(0,0,240,135);
 
@@ -50,7 +56,7 @@
         c.DrawTexture(darkclouds?darkcloudstex:cloudstex, -Time.TotalTime * bgscrollspeed % 240-camshake.X, -camshake.Y, Alignment.TopLeft);
         c.DrawTexture(darkclouds?darkcloudstex:cloudstex, -Time.TotalTime * bgscrollspeed % 240 + 240-camshake.X, -camshake.Y, Alignment.TopLeft);
 
-        //UI
+        //ingame ui
         rendertext(c, dfont, ammo + " ammo", new Vector2(3, 4), shadowcol);
         rendertext(c, dfont, ammo + " ammo", new Vector2(4, 3), Color.White);
         rendertext(c, dfont, Player.Score + "", new Vector2(236-predicttextwidth(dfont,Player.Score+""), 4), shadowcol);
@@ -58,7 +64,7 @@
         rendertext(c, dfont, scoredisp + "", new Vector2(Window.Width/2-predicttextwidth(dfont, scoredisp + "")/2-1,4), shadowcol);
         rendertext(c, dfont, scoredisp + "", new Vector2(Window.Width/2-predicttextwidth(dfont, scoredisp + "")/2,3), Color.White);
 
-        //Spawn ammo
+        //ingame ammo collectible system
         for (int i = 0; i < ammos.Count; i++) {
             float scalemult = easeoutelastic(Time.TotalTime-ammos[i].spawntime);
             c.DrawTexture(ammotex, new (ammos[i].pos + new Vector2(-1,sin(Time.TotalTime*3+i*4)*3+1)-camshake, new Vector2(6,8)*scalemult, Alignment.Center), shadowcol);
@@ -79,14 +85,15 @@
                 cursorsize += .75f;
             }
         }
-        //Move my goo
+
+        //goo spawning system
         if (!hasgoo && lastgootime + goospawntime <= Time.TotalTime && !gameover) {
             goo.pos = new Vector2(r.Next(12, 228), r.Next(12, 100));
             goo.spawntime = Time.TotalTime + (float)r.NextDouble()/6f;
             hasgoo = true;
         }
 
-        //Consume Goo
+        //ingame goo collectible system
         if (hasgoo) {
             float scalemult = easeoutelastic(Time.TotalTime-goo.spawntime);
             c.DrawTexture(gootex, new (goo.pos + new Vector2(-1,sin(Time.TotalTime*3)*3+1)-camshake, new Vector2(8,8)*scalemult, Alignment.Center), shadowcol);
@@ -114,7 +121,7 @@
             }
         }
 
-        //More BOOLET
+        //clear the bullets to add more bullets
         if (collammo == totalammo) {
             ammos.Clear();
             totalammo = (byte)r.Next(minammo, maxammo);
@@ -124,8 +131,8 @@
                 ammos.Add(new() { pos = new Vector2(r.Next(12, 228), r.Next(12, 100)), spawntime = Time.TotalTime + (float)r.NextDouble()/6f });
         }
 
-        //The boolets
-        for (int i = 0; i < ammosalt.Count; i++) {
+        //bullet despawning particle effect
+        for(int i = 0; i < ammosalt.Count; i++) {
             float scalemult = 1-easeinback(2*(Time.TotalTime-ammosalt[i].spawntime));
             c.DrawTexture(ammotex, new(ammosalt[i].pos + new Vector2(-1, sin(Time.TotalTime * 3 + i * 4) * 3 + 1)-camshake, new Vector2(6, 8) * scalemult, Alignment.Center), shadowcol);
             c.DrawTexture(ammotex, ammosalt[i].pos + new Vector2(0, sin(Time.TotalTime * 3 + i * 4) * 3)-camshake, new Vector2(6, 8) * scalemult, Alignment.Center);
@@ -139,7 +146,7 @@
             }
         }
 
-        //The Goo
+        //goo despawning particle effect
         if (hasgooalt) { 
             float scalemult = 1-easeinback(2*(Time.TotalTime-gooalt.spawntime));
             c.DrawTexture(gootex, new(gooalt.pos + new Vector2(-1, sin(Time.TotalTime * 3) * 3 + 1)-camshake, new Vector2(8, 8) * scalemult, Alignment.Center), shadowcol);
@@ -152,7 +159,7 @@
                 hasgooalt = false;
         }
 
-        //Player
+        //draw player
         Player.Drawplayer(c);
 
         //rain
@@ -177,8 +184,10 @@
             }
         }
 
+        //draw the menu
         mainmenu.DrawMenu(c);
 
+        //fullscreening
         if (Keyboard.IsKeyPressed(Key.F)) {
             fullscreen = !fullscreen;
 
@@ -188,10 +197,11 @@
                 Window.ExitFullscreen();
         }
 
+        //quit the game
         if (Keyboard.IsKeyPressed(Key.Escape))
             Environment.Exit(0);
 
-        //Game Over
+        //game over screen
         if (gameover) {
             rendertext(c,dfont, "Press r to restart", new Vector2(120-predicttextwidth(dfont, "Press r to restart")/2f-1,round(67.5f+67.5f*(1-easeoutback((Time.TotalTime-timeofdeath)/2f)))+9-dfont.charh), shadowcol);
             rendertext(c,dfont, "Press r to restart", new Vector2(120-predicttextwidth(dfont, "Press r to restart")/2f,round(67.5f+67.5f*(1-easeoutback((Time.TotalTime-timeofdeath)/2f)))+8-dfont.charh),Color.White);
