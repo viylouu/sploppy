@@ -1,5 +1,6 @@
 ﻿partial class sploppy {
-    static void rend(ICanvas c) {
+    static void rend(ICanvas canv) {
+        ICanvas c = canvas.GetCanvas();
 
         //Update
         Player.Updateplayer();
@@ -12,9 +13,6 @@
         Vector2 caccel = (cforce+cdamp)/camm;
         camv += caccel * Time.DeltaTime;
         camshake += camv * Time.DeltaTime;
-
-        //clear background
-        c.Clear(Color.CornflowerBlue);
 
         //detect and set background properties
         switch(diff) {
@@ -63,6 +61,19 @@
         rendertext(c, dfont, Player.Score + "", new Vector2(237-predicttextwidth(dfont, Player.Score + ""), 3), Color.White);
         rendertext(c, dfont, scoredisp + "", new Vector2(Window.Width/2-predicttextwidth(dfont, scoredisp + "")/2-1,4), shadowcol);
         rendertext(c, dfont, scoredisp + "", new Vector2(Window.Width/2-predicttextwidth(dfont, scoredisp + "")/2,3), Color.White);
+
+        //crystal update logic
+        if(cursorsize >= maxcursorsize) {
+            cursorsize -= maxcursorsize-1;
+            collecttelesfx.Play();
+            crystals++;
+        }
+
+        //draw the crystals in ui
+        for(int i = 0; i < crystals; i++) {
+            c.DrawTexture(telecrysttex,new(3+i*9,132+sin((Time.TotalTime+i/3f)*6)*2,7,14,Alignment.BottomLeft),shadowcol);
+            c.DrawTexture(telecrysttex,4+i*9,131+sin((Time.TotalTime+i/3f)*6)*2,Alignment.BottomLeft);
+        }
 
         //ingame ammo collectible system
         for (int i = 0; i < ammos.Count; i++) {
@@ -265,5 +276,12 @@
 
             lastgootime = Time.TotalTime;
         }
+
+        c.Flush();
+        sshad.backbuffer = canvas;
+        sshad.time = Time.TotalTime;
+        sshad.highness = 0;
+        canv.Fill(sshad);
+        canv.DrawRect(0,0,240,135);
     }
 }

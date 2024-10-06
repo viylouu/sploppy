@@ -9,6 +9,8 @@ partial class sploppy {
     static byte diff = 1;
     const float bgscrollspeed = 240 / 8f;
     static uint highscoreRM, highscoreHM, highscoreMM, scoredisp = 0;
+    static Vector2 cursorpos;
+    static screenshader sshad = new();
 
     //camerashake
     static Vector2 camshake;
@@ -44,10 +46,10 @@ partial class sploppy {
 
     //textures
     static ITexture sploppertex,flippedsploppertex,guntex,flippedguntex,cloudstex,bgtex,ammotex,gootex,darkcloudstex,bghardtex,bgmastertex,raintex,
-                    shelltex,cursoroltex,cursortex;
+                    shelltex,cursoroltex,cursortex,telecrysttex;
 
     //audio
-    static ISound music,shootsfx,shootnoammosfx,collectammosfx,collectgoosfx,windsfx,gameoversfx,startgamesfx;
+    static ISound music,shootsfx,shootnoammosfx,collectammosfx,collectgoosfx,windsfx,gameoversfx,startgamesfx,collecttelesfx;
     static SoundPlayback musicpb,windsfxpb;
 
     //ammo
@@ -62,4 +64,11 @@ partial class sploppy {
     static collectible goo = new(), gooalt = new();
     static bool hasgoo, hasgooalt;
     static float lastgootime, goospawntime = 6;
+
+    //telecrystals
+    static byte crystals = 0;
+    static float maxcursorsize = 3;
+
+    //canvas tex
+    static ITexture canvas;
 }

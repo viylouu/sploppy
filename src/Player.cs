@@ -53,6 +53,7 @@ partial class sploppy {
                         gooalt.pos = goo.pos;
                         gooalt.spawntime = Time.TotalTime;
                         gooalt.vely = -72f;
+                        crystals = 0;
 
                         if (Score > scoredisp) {
                             switch (diff) {
@@ -298,6 +299,7 @@ partial class sploppy {
             else
                 canvas.DrawTexture(flippedsploppertex, Ppos-camshake, Alignment.Center);
 
+            //drawing the gun
             canvas.Translate(gunpos.X-1-camshake.X, gunpos.Y+1-camshake.Y);
             canvas.Rotate(gunrot);
             canvas.DrawTexture(Mouse.Position.X<Ppos.X?flippedguntex:guntex, new(Vector2.Zero, new(16,8), Alignment.CenterLeft), shadowcol);
@@ -308,21 +310,35 @@ partial class sploppy {
             canvas.DrawTexture(Mouse.Position.X<Ppos.X?flippedguntex:guntex, Vector2.Zero, new(16, 8), Alignment.CenterLeft);
             canvas.ResetState();
 
+            //draw the debugging
             if (debug)
                 playerdebug(canvas);
 
-            canvas.Translate(Mouse.Position.X-1, Mouse.Position.Y+1);
+            //update the cursor pos
+            cursorpos += (new Vector2(clamp(Mouse.Position.X,cursorsize*5+2,240-cursorsize*5-2),clamp(Mouse.Position.Y,cursorsize*4.5f,135-cursorsize*6-2))-cursorpos)/(4/(Time.DeltaTime*60));
+
+            //draw the cursor
+            canvas.Translate(cursorpos.X-1,cursorpos.Y+1);
             canvas.Rotate(Time.TotalTime*4);
             canvas.DrawTexture(cursoroltex, new Rectangle(0,0, 9*cursorsize, 9*cursorsize, Alignment.Center), shadowcol);
             canvas.ResetState();
 
-            canvas.Translate(Mouse.Position);
+            canvas.Translate(cursorpos);
             canvas.Rotate(Time.TotalTime*4);
             canvas.DrawTexture(cursoroltex, Vector2.Zero, Vector2.One*9*cursorsize, Alignment.Center);
             canvas.ResetState();
 
-            canvas.DrawTexture(cursortex, new Rectangle(Mouse.Position.X-1, Mouse.Position.Y+1, 9,9, Alignment.Center), shadowcol);
-            canvas.DrawTexture(cursortex, Mouse.Position, Alignment.Center);
+            canvas.DrawTexture(cursortex, new Rectangle(cursorpos.X-1,cursorpos.Y+1,9,9,Alignment.Center), shadowcol);
+            canvas.DrawTexture(cursortex, cursorpos, Alignment.Center);
+
+            canvas.Fill(shadowcol);
+            canvas.DrawRect(cursorpos.X-cursorsize*6f-1,cursorpos.Y+cursorsize*5f+1,cursorsize*12,2);
+
+            canvas.Fill(new Color(39,39,54));
+            canvas.DrawRect(cursorpos.X-cursorsize*6f,cursorpos.Y+cursorsize*5f,cursorsize*12,2);
+
+            canvas.Fill(new Color(255,255,235));
+            canvas.DrawRect(cursorpos.X-cursorsize*6f,cursorpos.Y+cursorsize*5f,cursorsize*12*Clamp((cursorsize-1)/(maxcursorsize-1),0,1),2);
         }
     }
 }

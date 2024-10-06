@@ -24,6 +24,7 @@
         shelltex = Graphics.LoadTexture(@"assets\sprites\shell.png");
         cursoroltex = Graphics.LoadTexture(@"assets\sprites\cursor outline.png");
         cursortex = Graphics.LoadTexture(@"assets\sprites\cursor.png");
+        telecrysttex = Graphics.LoadTexture(@"assets\sprites\teleportcrystal.png");
 
         music = Audio.LoadSound(@"assets\audio\song.wav");
         musicpb = music.Loop();
@@ -35,6 +36,7 @@
         windsfxpb = windsfx.Loop();
         gameoversfx = Audio.LoadSound(@"assets\audio\gameover.wav");
         startgamesfx = Audio.LoadSound(@"assets\audio\start.wav");
+        collecttelesfx = Audio.LoadSound(@"assets\audio\collectteleporter.wav");
 
         ammos = new List<collectible>();
         ammosalt = new List<collectible>();
@@ -69,5 +71,7 @@
             highscoreHM = Convert.ToUInt32(dats[1]);
             highscoreMM = Convert.ToUInt32(dats[2]);
         }
+
+        canvas = Graphics.CreateTexture(240,135);
     }
 }

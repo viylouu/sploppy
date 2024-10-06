@@ -28,7 +28,7 @@
 
         if(pos.Y < 13)
             colidx--;
-        else if(pos.Y > 132)
+        else if(pos.Y > 114)
             colidx--;
         else if(pos.X > 237)
             colidx--;
@@ -39,12 +39,13 @@
             colidx+=2;
         if(Floor(pos.X) == 238 && pos.Y > 1-float.Epsilon && pos.Y < 134+float.Epsilon)
             colidx+=2;
-
         if(Floor(pos.Y) == 1 && pos.X > 2-float.Epsilon && pos.X < 238+float.Epsilon)
             colidx+=2;
         if(Floor(pos.Y) == 11 && pos.X > 2-float.Epsilon && pos.X < 238+float.Epsilon)
             colidx+=2;
         if(Floor(pos.Y) == 133 && pos.X > 2-float.Epsilon && pos.X < 238+float.Epsilon)
+            colidx+=2;
+        if(Floor(pos.Y) == 115 && pos.X > 2-float.Epsilon && pos.X < 238+float.Epsilon)
             colidx+=2;
 
         ColorF retcol = ColorF.CornflowerBlue;
