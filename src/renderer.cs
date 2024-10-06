@@ -2,6 +2,30 @@
     static void rend(ICanvas canv) {
         ICanvas c = canvas.GetCanvas();
 
+        delta = Time.DeltaTime * gamespeedmult;
+
+        if(crystals > 0 && Keyboard.IsKeyPressed(Key.C)) { 
+            high = true;
+            crystals--;
+            usecrystalsfx.Play();
+            highstarttime = Time.TotalTime;
+        }
+
+        if(high && Mouse.IsButtonPressed(MouseButton.Left) && Mouse.Position.X>0&&Mouse.Position.X<240&&Mouse.Position.Y>0&&Mouse.Position.Y<135) {
+            high = false;
+            Player.Ppos = Mouse.Position;
+        }
+
+        if(highness <= 0.1f && !high)
+            highness = 0;
+
+        highness += ((high?1:0)-highness)/(24/(Time.DeltaTime*60));
+        gamespeedmult = 1-highness;
+
+        musicpb.Volume = 1-highness;
+        windsfxpb.Volume = 1-highness;
+        highpadspb.Volume = highness;
+
         //Update
         Player.Updateplayer();
 
@@ -9,10 +33,10 @@
 
         //camera shake effect
         Vector2 cforce = -camk*camshake;
-        Vector2 cdamp = -camb*camv*Time.DeltaTime;
+        Vector2 cdamp = -camb*camv*delta;
         Vector2 caccel = (cforce+cdamp)/camm;
-        camv += caccel * Time.DeltaTime;
-        camshake += camv * Time.DeltaTime;
+        camv += caccel * delta;
+        camshake += camv * delta;
 
         //detect and set background properties
         switch(diff) {
@@ -148,8 +172,8 @@
             c.DrawTexture(ammotex, new(ammosalt[i].pos + new Vector2(-1, sin(Time.TotalTime * 3 + i * 4) * 3 + 1)-camshake, new Vector2(6, 8) * scalemult, Alignment.Center), shadowcol);
             c.DrawTexture(ammotex, ammosalt[i].pos + new Vector2(0, sin(Time.TotalTime * 3 + i * 4) * 3)-camshake, new Vector2(6, 8) * scalemult, Alignment.Center);
 
-            ammosalt[i].vely += Time.DeltaTime * gravity;
-            ammosalt[i].pos += new Vector2(0, ammosalt[i].vely * Time.DeltaTime);
+            ammosalt[i].vely += delta * gravity;
+            ammosalt[i].pos += new Vector2(0, ammosalt[i].vely * delta);
 
             if (Time.TotalTime >= ammosalt[i].spawntime+.5f) {
                 ammosalt.RemoveAt(i);
@@ -163,8 +187,8 @@
             c.DrawTexture(gootex, new(gooalt.pos + new Vector2(-1, sin(Time.TotalTime * 3) * 3 + 1)-camshake, new Vector2(8, 8) * scalemult, Alignment.Center), shadowcol);
             c.DrawTexture(gootex, gooalt.pos + new Vector2(0, sin(Time.TotalTime * 3) * 3)-camshake, new Vector2(8, 8) * scalemult, Alignment.Center);
 
-            gooalt.vely += Time.DeltaTime * gravity;
-            gooalt.pos += new Vector2(0, gooalt.vely * Time.DeltaTime);
+            gooalt.vely += delta * gravity;
+            gooalt.pos += new Vector2(0, gooalt.vely * delta);
 
             if (Time.TotalTime >= gooalt.spawntime+.5f)
                 hasgooalt = false;
@@ -196,19 +220,19 @@
             }
 
             if(shells[i].pvel.X > 0)
-                shells[i].pvel -= new Vector2(24 * Time.DeltaTime,0);
+                shells[i].pvel -= new Vector2(24 * delta,0);
             if(shells[i].pvel.X < 0)
-                shells[i].pvel += new Vector2(24 * Time.DeltaTime,0);
+                shells[i].pvel += new Vector2(24 * delta,0);
 
-            shells[i].pvel += new Vector2(0,gravity * Time.DeltaTime);
-            shells[i].pos += shells[i].pvel * Time.DeltaTime;
+            shells[i].pvel += new Vector2(0,gravity * delta);
+            shells[i].pos += shells[i].pvel * delta;
 
             if(shells[i].rvel > 0)
-                shells[i].rvel -= 24 * Time.DeltaTime;
+                shells[i].rvel -= 24 * delta;
             if(shells[i].rvel < 0)
-                shells[i].rvel += 24 * Time.DeltaTime;
+                shells[i].rvel += 24 * delta;
 
-            shells[i].rot += shells[i].rvel * Time.DeltaTime;
+            shells[i].rot += shells[i].rvel * delta;
 
             if(shells[i].pos.Y > 248) { shells.RemoveAt(i); i--; }
         }
@@ -229,7 +253,7 @@
                 c.DrawTexture(raintex, 0, 0, 1, 32, Alignment.Center);
                 c.ResetState();
 
-                rainposses[i] += new Vector2(cos(raindir+pid2pd4),sin(raindir+pid2pd4))*rainspeed*Time.DeltaTime;
+                rainposses[i] += new Vector2(cos(raindir+pid2pd4),sin(raindir+pid2pd4))*rainspeed*delta;
 
                 if (rainposses[i].Y > Window.Height + 16) {
                     rainposses.RemoveAt(i);
@@ -280,8 +304,11 @@
         c.Flush();
         sshad.backbuffer = canvas;
         sshad.time = Time.TotalTime;
-        sshad.highness = 0;
+        sshad.highness = highness;
         canv.Fill(sshad);
         canv.DrawRect(0,0,240,135);
+
+        canv.Fill(Color.White);
+        canv.DrawAlignedText(highness + "", 24, 3,64,Alignment.TopLeft);
     }
 }

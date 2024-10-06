@@ -21,17 +21,18 @@ partial class sploppy {
                 normgundir = Vector2.Normalize(Mouse.Position-Ppos);
 
             if(Mouse.Position != Ppos)
-                gunpos += (normgundir*8+Ppos-gunpos) / (5/(Time.DeltaTime*60));
+                gunpos += (normgundir*8+Ppos-gunpos) / (5/(delta*60));
 
-            cursorsize += (1-cursorsize) / (48/(Time.DeltaTime*60));
+            cursorsize += (1-cursorsize) / (48/(delta*60));
 
             atannormgundir = atan2(normgundir);
 
-            gunrot = Angle.Lerp(gunrot, atannormgundir, clamp(2.5f/Time.DeltaTime,0,1));
+            if(!high)
+                gunrot = Angle.Lerp(gunrot, atannormgundir, clamp(2.5f/delta,0,1));
 
             if(canmove) {
                 //Update Position
-                Ppos += Pvel * Time.DeltaTime;
+                Ppos += Pvel * delta;
 
                 if(!gameover) {
                     //Bounce
@@ -54,6 +55,7 @@ partial class sploppy {
                         gooalt.spawntime = Time.TotalTime;
                         gooalt.vely = -72f;
                         crystals = 0;
+                        high = false;
 
                         if (Score > scoredisp) {
                             switch (diff) {
@@ -77,9 +79,9 @@ partial class sploppy {
                     Score = (uint)MathF.Floor((Time.TotalTime-starttime)*4);
 
                     //Gravity
-                    Pvel.Y += gravity * Time.DeltaTime;
-                    if (Pvel.X > 0) Pvel.X -= drag * Time.DeltaTime;
-                    else if(Pvel.X < 0) Pvel.X += drag * Time.DeltaTime;
+                    Pvel.Y += gravity * delta;
+                    if (Pvel.X > 0) Pvel.X -= drag * delta;
+                    else if(Pvel.X < 0) Pvel.X += drag * delta;
 
                     if (bot && ammo > 0)
                         bottick();
@@ -88,7 +90,7 @@ partial class sploppy {
 
             if(!gameover) {
                 //Input
-                if (ammo > 0 && (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space))) {
+                if (!high && ammo > 0 && (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space))) {
                     Vector2 ldir = -Vector2.Normalize(Mouse.Position - Ppos);
                     Pvel = ldir * gunforce; 
                     ammo--; 
@@ -113,7 +115,7 @@ partial class sploppy {
                         }
                     );
                 }
-                else if (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space))
+                else if ((Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space)) && !high)
                     shootnoammosfx.Play();
             }
         }
@@ -315,7 +317,7 @@ partial class sploppy {
                 playerdebug(canvas);
 
             //update the cursor pos
-            cursorpos += (new Vector2(clamp(Mouse.Position.X,cursorsize*5+2,240-cursorsize*5-2),clamp(Mouse.Position.Y,cursorsize*4.5f,135-cursorsize*6-2))-cursorpos)/(4/(Time.DeltaTime*60));
+            cursorpos += (new Vector2(clamp(Mouse.Position.X,cursorsize*5+2,240-cursorsize*5-2),clamp(Mouse.Position.Y,cursorsize*4.5f,135-cursorsize*6-2))-cursorpos)/(4/(delta*60));
 
             //draw the cursor
             canvas.Translate(cursorpos.X-1,cursorpos.Y+1);

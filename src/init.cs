@@ -37,6 +37,10 @@
         gameoversfx = Audio.LoadSound(@"assets\audio\gameover.wav");
         startgamesfx = Audio.LoadSound(@"assets\audio\start.wav");
         collecttelesfx = Audio.LoadSound(@"assets\audio\collectteleporter.wav");
+        highpads = Audio.LoadSound(@"assets\audio\highpads.wav");
+        highpadspb = highpads.Loop();
+        highpadspb.Volume = 0;
+        usecrystalsfx = Audio.LoadSound(@"assets\audio\usecrystal.wav");
 
         ammos = new List<collectible>();
         ammosalt = new List<collectible>();

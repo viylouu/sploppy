@@ -49,8 +49,8 @@ partial class sploppy {
                     shelltex,cursoroltex,cursortex,telecrysttex;
 
     //audio
-    static ISound music,shootsfx,shootnoammosfx,collectammosfx,collectgoosfx,windsfx,gameoversfx,startgamesfx,collecttelesfx;
-    static SoundPlayback musicpb,windsfxpb;
+    static ISound music,shootsfx,shootnoammosfx,collectammosfx,collectgoosfx,windsfx,gameoversfx,startgamesfx,collecttelesfx,highpads,usecrystalsfx;
+    static SoundPlayback musicpb,windsfxpb,highpadspb;
 
     //ammo
     static ushort ammo = 10;
@@ -68,7 +68,14 @@ partial class sploppy {
     //telecrystals
     static byte crystals = 0;
     static float maxcursorsize = 3;
+    static float highness = 0;
+    static float gamespeedmult = .5f;
+    static bool high = false;
+    static float highstarttime = 0;
 
     //canvas tex
     static ITexture canvas;
+
+    //delta time
+    static float delta;
 }

@@ -7,7 +7,7 @@
         ColorF fincol = backbuffer.Sample(pos);
         if(highness > 0) {
             float st = Sin(time*4+(pos.X+pos.Y)/24)*10;
-            float fadeamt = 3*highness;
+            float fadeamt = 2*highness;
             Vector2 sintime = MakeVector2(st,st);
             fincol += new ColorF(backbuffer.Sample(pos+sintime).R/fadeamt,backbuffer.Sample(pos+sintime+MakeVector2(3,0)).G/fadeamt,backbuffer.Sample(pos+sintime-MakeVector2(3,0)).B/fadeamt);
             fincol -= backbuffer.Sample(pos)/fadeamt;
