@@ -39,6 +39,7 @@
         ammos = new List<collectible>();
         ammosalt = new List<collectible>();
         rainposses = new List<Vector2>();
+        shells = new List<particle>();
 
         totalammo = (byte)r.Next(minammo, maxammo);
 

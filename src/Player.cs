@@ -102,6 +102,15 @@ partial class sploppy {
                     cursorsize += .5f;
                     camshake += ldir*6;
                     camv += ldir*6;
+
+                    shells.Add(
+                        new() { 
+                            pos = Ppos + -ldir*16, 
+                            rot = ((float)r.NextDouble()*2-1)*pi,
+                            pvel = new Vector2(cos(atannormgundir-pi/2f)*1.5f,(ldir.X>0?-1:1)*sin(atannormgundir-pi/2f))*64,
+                            rvel = (r.Next(0,2)*2-1)*32
+                        }
+                    );
                 }
                 else if (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space))
                     shootnoammosfx.Play();

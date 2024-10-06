@@ -159,6 +159,49 @@
                 hasgooalt = false;
         }
 
+        //shell particles
+        for(int i = 0; i < shells.Count; i++) {
+            c.Translate(shells[i].pos.X-1-camshake.X,shells[i].pos.Y+1-camshake.Y);
+            c.Rotate(shells[i].rot);
+            c.DrawTexture(shelltex,new (0,0,8,8,Alignment.Center), shadowcol);
+            c.ResetState();
+
+            c.Translate(shells[i].pos-camshake);
+            c.Rotate(shells[i].rot);
+            c.DrawTexture(shelltex,0,0,8,8,Alignment.Center);
+            c.ResetState();
+
+            if(shells[i].pos.Y < 3) { 
+                shells[i].pvel = new Vector2(shells[i].pvel.X,abs(shells[i].pvel.Y)); 
+                shells[i].pos = new Vector2(shells[i].pos.X,3);
+            }
+            if(shells[i].pos.X < 4) { 
+                shells[i].pvel = new Vector2(abs(shells[i].pvel.X),shells[i].pvel.Y); 
+                shells[i].pos = new Vector2(4, shells[i].pos.Y);
+            }
+            if(shells[i].pos.X > 236) { 
+                shells[i].pvel = new Vector2(-abs(shells[i].pvel.X),shells[i].pvel.Y);
+                shells[i].pos = new Vector2(236, shells[i].pos.Y); 
+            }
+
+            if(shells[i].pvel.X > 0)
+                shells[i].pvel -= new Vector2(24 * Time.DeltaTime,0);
+            if(shells[i].pvel.X < 0)
+                shells[i].pvel += new Vector2(24 * Time.DeltaTime,0);
+
+            shells[i].pvel += new Vector2(0,gravity * Time.DeltaTime);
+            shells[i].pos += shells[i].pvel * Time.DeltaTime;
+
+            if(shells[i].rvel > 0)
+                shells[i].rvel -= 24 * Time.DeltaTime;
+            if(shells[i].rvel < 0)
+                shells[i].rvel += 24 * Time.DeltaTime;
+
+            shells[i].rot += shells[i].rvel * Time.DeltaTime;
+
+            if(shells[i].pos.Y > 248) { shells.RemoveAt(i); i--; }
+        }
+
         //draw player
         Player.Drawplayer(c);
 
