@@ -118,16 +118,17 @@
 
                     for(int i = 0; i < 24; i++) {
                         Vector2 ndir = new Vector2(cos(gunrot+(float)r.NextDouble()/2f),sin(gunrot+(float)r.NextDouble()/2f));
+                        int partic = r.Next(0,3);
                         particles.Add(
                             new() { 
                                 pos = gunpos+ndir*16, 
-                                vel = ndir*128, 
+                                vel = ndir*r.Next(128,164), 
                                 size = 6, 
-                                col = new Color(96,96,112), 
-                                dcol = new Color(67,67,79), 
+                                col = partic==0?new Color(235,86,75):(partic==1?new Color(255,145,102):new Color(255,181,112)), 
+                                dcol = partic==0?new Color(176,48,92):(partic==1?new Color(227,105,86):new Color(255,145,102)),
                                 gas = true, 
                                 spawntime = totaltime, 
-                                lasttime = 2,
+                                lasttime = .85f,
                                 startsize = 6,
                             }
                         );

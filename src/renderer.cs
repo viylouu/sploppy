@@ -217,7 +217,7 @@
             c.DrawTexture(gootex, new (goo.pos + new Vector2(-1,sin(totaltime*3)*3+1)-camshake, new Vector2(8,8)*scalemult, Alignment.Center), shadowcol);
             c.DrawTexture(gootex, goo.pos + new Vector2(0,sin(totaltime*3)*3)-camshake, new Vector2(8,8)*scalemult, Alignment.Center);
 
-            if(totaltime%.15f<=0.001f)
+            if(totaltime%.025f<=0.001f)
                 particles.Add(
                     new() { 
                         pos = goo.pos+new Vector2(((float)r.NextDouble()*2-1)*3,0), 
