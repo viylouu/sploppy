@@ -13,4 +13,5 @@
     static float cos(float a) => MathF.Cos(a);
     static float torad(float a) => a * (pi / 180f);
     static Vector2 round(Vector2 a) => new(round(a.X),round(a.Y));
+    static Vector2 clamp(Vector2 a, Vector2 b, Vector2 c) => new(clamp(a.X,b.X,c.X),clamp(a.Y,b.Y,c.Y));
 }

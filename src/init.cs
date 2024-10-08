@@ -41,23 +41,25 @@
         highpadspb = highpads.Loop();
         highpadspb.Volume = 0;
         usecrystalsfx = Audio.LoadSound(@"assets\audio\usecrystal.wav");
+        fadebacksfx = Audio.LoadSound(@"assets\audio\fadebackin.wav");
 
         ammos = new List<collectible>();
         ammosalt = new List<collectible>();
         rainposses = new List<Vector2>();
-        shells = new List<particle>();
+        shells = new List<shells>();
+        particles = new List<particle>();
 
         totalammo = (byte)r.Next(minammo, maxammo);
 
         for (int i = 0; i < totalammo; i++)
-            ammos.Add(new() { pos = new Vector2(r.Next(12, 228), r.Next(12, 100)), spawntime = Time.TotalTime + (float)r.NextDouble()/6f });
+            ammos.Add(new() { pos = new Vector2(r.Next(12, 228), r.Next(12, 100)), spawntime = totaltime + (float)r.NextDouble()/6f });
 
-        lastgootime = Time.TotalTime;
-        starttime = Time.TotalTime;
+        lastgootime = totaltime;
+        starttime = totaltime;
 
         Window.SetIcon(logo);
 
-        lastraintime = Time.TotalTime;
+        lastraintime = totaltime;
 
         diff = 1;
         gravity = 82;

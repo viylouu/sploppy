@@ -8,18 +8,18 @@
             high = true;
             crystals--;
             usecrystalsfx.Play();
-            highstarttime = Time.TotalTime;
         }
 
-        if(high && Mouse.IsButtonPressed(MouseButton.Left) && Mouse.Position.X>0&&Mouse.Position.X<240&&Mouse.Position.Y>0&&Mouse.Position.Y<135) {
+        if(high && (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space)) && Mouse.Position.X>0&&Mouse.Position.X<240&&Mouse.Position.Y>0&&Mouse.Position.Y<135) {
             high = false;
-            Player.Ppos = Mouse.Position;
+            Player.Ppos = Mouse.Position+camshake;
+            fadebacksfx.Play();
+            canshoot = false;
         }
 
-        if(highness <= 0.1f && !high)
-            highness = 0;
+        totaltime += delta;
 
-        highness += ((high?1:0)-highness)/(24/(Time.DeltaTime*60));
+        highness += ((high?1:0)-highness)/(16/(Time.DeltaTime*60));
         gamespeedmult = 1-highness;
 
         musicpb.Volume = 1-highness;
@@ -28,6 +28,8 @@
 
         //Update
         Player.Updateplayer();
+
+        canshoot = true;
 
         mainmenu.Updatemenu();
 
@@ -73,10 +75,10 @@
         c.Fill(bggrad);
         c.DrawRect(0,0,240,135);
 
-        c.DrawTexture(darkclouds?darkcloudstex:cloudstex, new(-Time.TotalTime * bgscrollspeed % 240 - 1-camshake.X, 1-camshake.Y, 240, 135, Alignment.TopLeft), shadowcol);
-        c.DrawTexture(darkclouds?darkcloudstex:cloudstex, new(-Time.TotalTime * bgscrollspeed % 240 + 239-camshake.X, 1-camshake.Y, 240, 135, Alignment.TopLeft), shadowcol);
-        c.DrawTexture(darkclouds?darkcloudstex:cloudstex, -Time.TotalTime * bgscrollspeed % 240-camshake.X, -camshake.Y, Alignment.TopLeft);
-        c.DrawTexture(darkclouds?darkcloudstex:cloudstex, -Time.TotalTime * bgscrollspeed % 240 + 240-camshake.X, -camshake.Y, Alignment.TopLeft);
+        c.DrawTexture(darkclouds?darkcloudstex:cloudstex, new(-totaltime * bgscrollspeed % 240 - 1-camshake.X, 1-camshake.Y, 240, 135, Alignment.TopLeft), shadowcol);
+        c.DrawTexture(darkclouds?darkcloudstex:cloudstex, new(-totaltime * bgscrollspeed % 240 + 239-camshake.X, 1-camshake.Y, 240, 135, Alignment.TopLeft), shadowcol);
+        c.DrawTexture(darkclouds?darkcloudstex:cloudstex, -totaltime * bgscrollspeed % 240-camshake.X, -camshake.Y, Alignment.TopLeft);
+        c.DrawTexture(darkclouds?darkcloudstex:cloudstex, -totaltime * bgscrollspeed % 240 + 240-camshake.X, -camshake.Y, Alignment.TopLeft);
 
         //ingame ui
         rendertext(c, dfont, ammo + " ammo", new Vector2(3, 4), shadowcol);
@@ -95,15 +97,15 @@
 
         //draw the crystals in ui
         for(int i = 0; i < crystals; i++) {
-            c.DrawTexture(telecrysttex,new(3+i*9,132+sin((Time.TotalTime+i/3f)*6)*2,7,14,Alignment.BottomLeft),shadowcol);
-            c.DrawTexture(telecrysttex,4+i*9,131+sin((Time.TotalTime+i/3f)*6)*2,Alignment.BottomLeft);
+            c.DrawTexture(telecrysttex,new(3+i*9,132+sin((totaltime+i/3f)*6)*2,7,14,Alignment.BottomLeft),shadowcol);
+            c.DrawTexture(telecrysttex,4+i*9,131+sin((totaltime+i/3f)*6)*2,Alignment.BottomLeft);
         }
 
         //ingame ammo collectible system
         for (int i = 0; i < ammos.Count; i++) {
-            float scalemult = easeoutelastic(Time.TotalTime-ammos[i].spawntime);
-            c.DrawTexture(ammotex, new (ammos[i].pos + new Vector2(-1,sin(Time.TotalTime*3+i*4)*3+1)-camshake, new Vector2(6,8)*scalemult, Alignment.Center), shadowcol);
-            c.DrawTexture(ammotex, ammos[i].pos + new Vector2(0,sin(Time.TotalTime*3+i*4)*3)-camshake, new Vector2(6,8)*scalemult, Alignment.Center);
+            float scalemult = easeoutelastic(totaltime-ammos[i].spawntime);
+            c.DrawTexture(ammotex, new (ammos[i].pos + new Vector2(-1,sin(totaltime*3+i*4)*3+1)-camshake, new Vector2(6,8)*scalemult, Alignment.Center), shadowcol);
+            c.DrawTexture(ammotex, ammos[i].pos + new Vector2(0,sin(totaltime*3+i*4)*3)-camshake, new Vector2(6,8)*scalemult, Alignment.Center);
 
             if (debug) {
                 c.Stroke(Color.Red);
@@ -114,7 +116,7 @@
                 collectammosfx.Play();
                 ammo++;
                 collammo++;
-                ammosalt.Add(new() { pos = ammos[i].pos, spawntime = Time.TotalTime, vely = -72f });
+                ammosalt.Add(new() { pos = ammos[i].pos, spawntime = totaltime, vely = -72f });
                 ammos.RemoveAt(i);
                 i--;
                 cursorsize += .75f;
@@ -122,17 +124,17 @@
         }
 
         //goo spawning system
-        if (!hasgoo && lastgootime + goospawntime <= Time.TotalTime && !gameover) {
+        if (!hasgoo && lastgootime+goospawntime <= totaltime && !gameover) {
             goo.pos = new Vector2(r.Next(12, 228), r.Next(12, 100));
-            goo.spawntime = Time.TotalTime + (float)r.NextDouble()/6f;
+            goo.spawntime = totaltime + (float)r.NextDouble()/6f;
             hasgoo = true;
         }
 
         //ingame goo collectible system
         if (hasgoo) {
-            float scalemult = easeoutelastic(Time.TotalTime-goo.spawntime);
-            c.DrawTexture(gootex, new (goo.pos + new Vector2(-1,sin(Time.TotalTime*3)*3+1)-camshake, new Vector2(8,8)*scalemult, Alignment.Center), shadowcol);
-            c.DrawTexture(gootex, goo.pos + new Vector2(0,sin(Time.TotalTime*3)*3)-camshake, new Vector2(8,8)*scalemult, Alignment.Center);
+            float scalemult = easeoutelastic(totaltime-goo.spawntime);
+            c.DrawTexture(gootex, new (goo.pos + new Vector2(-1,sin(totaltime*3)*3+1)-camshake, new Vector2(8,8)*scalemult, Alignment.Center), shadowcol);
+            c.DrawTexture(gootex, goo.pos + new Vector2(0,sin(totaltime*3)*3)-camshake, new Vector2(8,8)*scalemult, Alignment.Center);
 
             if (debug) {
                 c.Stroke(Color.Red);
@@ -145,14 +147,14 @@
                 collammo = totalammo;
                 hasgoo = false;
                 hasgooalt = true;
-                lastgootime = Time.TotalTime;
+                lastgootime = totaltime;
                 gooalt.pos = goo.pos;
-                gooalt.spawntime = Time.TotalTime;
+                gooalt.spawntime = totaltime;
                 gooalt.vely = -72f;
                 cursorsize += sqr((totalammo-collammo+1)*1.25f);
 
                 for (int i = 0; i < ammos.Count; i++)
-                    ammosalt.Add(new() { pos = ammos[i].pos, spawntime = Time.TotalTime, vely = -72f });
+                    ammosalt.Add(new() { pos = ammos[i].pos, spawntime = totaltime, vely = -72f });
             }
         }
 
@@ -163,19 +165,19 @@
             collammo = 0;
 
             for (int i = 0; i < totalammo; i++)
-                ammos.Add(new() { pos = new Vector2(r.Next(12, 228), r.Next(12, 100)), spawntime = Time.TotalTime + (float)r.NextDouble()/6f });
+                ammos.Add(new() { pos = new Vector2(r.Next(12, 228), r.Next(12, 100)), spawntime = totaltime + (float)r.NextDouble()/6f });
         }
 
         //bullet despawning particle effect
         for(int i = 0; i < ammosalt.Count; i++) {
-            float scalemult = 1-easeinback(2*(Time.TotalTime-ammosalt[i].spawntime));
-            c.DrawTexture(ammotex, new(ammosalt[i].pos + new Vector2(-1, sin(Time.TotalTime * 3 + i * 4) * 3 + 1)-camshake, new Vector2(6, 8) * scalemult, Alignment.Center), shadowcol);
-            c.DrawTexture(ammotex, ammosalt[i].pos + new Vector2(0, sin(Time.TotalTime * 3 + i * 4) * 3)-camshake, new Vector2(6, 8) * scalemult, Alignment.Center);
+            float scalemult = 1-easeinback(2*(totaltime-ammosalt[i].spawntime));
+            c.DrawTexture(ammotex, new(ammosalt[i].pos + new Vector2(-1, sin(totaltime * 3 + i * 4) * 3 + 1)-camshake, new Vector2(6, 8) * scalemult, Alignment.Center), shadowcol);
+            c.DrawTexture(ammotex, ammosalt[i].pos + new Vector2(0, sin(totaltime * 3 + i * 4) * 3)-camshake, new Vector2(6, 8) * scalemult, Alignment.Center);
 
             ammosalt[i].vely += delta * gravity;
             ammosalt[i].pos += new Vector2(0, ammosalt[i].vely * delta);
 
-            if (Time.TotalTime >= ammosalt[i].spawntime+.5f) {
+            if (totaltime >= ammosalt[i].spawntime+.5f) {
                 ammosalt.RemoveAt(i);
                 i--;
             }
@@ -183,14 +185,14 @@
 
         //goo despawning particle effect
         if (hasgooalt) { 
-            float scalemult = 1-easeinback(2*(Time.TotalTime-gooalt.spawntime));
-            c.DrawTexture(gootex, new(gooalt.pos + new Vector2(-1, sin(Time.TotalTime * 3) * 3 + 1)-camshake, new Vector2(8, 8) * scalemult, Alignment.Center), shadowcol);
-            c.DrawTexture(gootex, gooalt.pos + new Vector2(0, sin(Time.TotalTime * 3) * 3)-camshake, new Vector2(8, 8) * scalemult, Alignment.Center);
+            float scalemult = 1-easeinback(2*(totaltime-gooalt.spawntime));
+            c.DrawTexture(gootex, new(gooalt.pos + new Vector2(-1, sin(totaltime * 3) * 3 + 1)-camshake, new Vector2(8, 8) * scalemult, Alignment.Center), shadowcol);
+            c.DrawTexture(gootex, gooalt.pos + new Vector2(0, sin(totaltime * 3) * 3)-camshake, new Vector2(8, 8) * scalemult, Alignment.Center);
 
             gooalt.vely += delta * gravity;
             gooalt.pos += new Vector2(0, gooalt.vely * delta);
 
-            if (Time.TotalTime >= gooalt.spawntime+.5f)
+            if (totaltime >= gooalt.spawntime+.5f)
                 hasgooalt = false;
         }
 
@@ -241,25 +243,43 @@
         Player.Drawplayer(c);
 
         //rain
-        if (diff > 1) {
-            if (Time.TotalTime >= lastraintime + rainspawnfreq) {
-                rainposses.Add(new Vector2(r.Next(0, 360), -16));
-                lastraintime = Time.TotalTime;
+        if (diff > 1 && totaltime >= lastraintime+rainspawnfreq) {
+            rainposses.Add(new Vector2(r.Next(0, 360), -16));
+            lastraintime = totaltime;
+        }
+
+        for (int i = 0; i < rainposses.Count; i++) {
+            c.Translate(rainposses[i]-camshake);
+            c.Rotate(raindir+pid4);
+            c.DrawTexture(raintex, 0, 0, 1, 32, Alignment.Center);
+            c.ResetState();
+
+            rainposses[i] += new Vector2(cos(raindir+pid2pd4),sin(raindir+pid2pd4))*rainspeed*delta;
+
+            if (rainposses[i].Y > Window.Height + 16) {
+                rainposses.RemoveAt(i);
+                i--;
             }
+        }
 
-            for (int i = 0; i < rainposses.Count; i++) {
-                c.Translate(rainposses[i]-camshake);
-                c.Rotate(raindir+pid4);
-                c.DrawTexture(raintex, 0, 0, 1, 32, Alignment.Center);
-                c.ResetState();
+        //particles
+        for(int i = 0; i < particles.Count; i++) {
+            c.Stroke(polcol);
+            c.DrawCircle(particles[i].pos-camshake, particles[i].size);
 
-                rainposses[i] += new Vector2(cos(raindir+pid2pd4),sin(raindir+pid2pd4))*rainspeed*delta;
+            c.Fill(particles[i].dcol);
+            c.DrawCircle(particles[i].pos-camshake, particles[i].size);
 
-                if (rainposses[i].Y > Window.Height + 16) {
-                    rainposses.RemoveAt(i);
-                    i--;
-                }
-            }
+            c.Fill(particles[i].col);
+            c.DrawCircle(particles[i].pos-camshake + particles[i].size*new Vector2(.25f,-.25f), particles[i].size*.75f);
+
+            if(particles[i].vel.X > 0)
+                particles[i].vel -= new Vector2(24*delta,0);
+            else if(particles[i].vel.X < 0)
+                particles[i].vel += new Vector2(24*delta,0);
+
+            particles[i].vel += new Vector2(0,gravity*delta);
+            particles[i].pos += particles[i].vel * delta;
         }
 
         //draw the menu
@@ -281,10 +301,10 @@
 
         //game over screen
         if (gameover) {
-            rendertext(c,dfont, "Press r to restart", new Vector2(120-predicttextwidth(dfont, "Press r to restart")/2f-1,round(67.5f+67.5f*(1-easeoutback((Time.TotalTime-timeofdeath)/2f)))+9-dfont.charh), shadowcol);
-            rendertext(c,dfont, "Press r to restart", new Vector2(120-predicttextwidth(dfont, "Press r to restart")/2f,round(67.5f+67.5f*(1-easeoutback((Time.TotalTime-timeofdeath)/2f)))+8-dfont.charh),Color.White);
-            rendertext(c,dfont,"Game Over",new Vector2(98,round(67.5f+67.5f*(1-easeoutback((Time.TotalTime-timeofdeath)/2f)))+1-dfont.charh), shadowcol);
-            rendertext(c,dfont,"Game Over",new Vector2(99,round(67.5f+67.5f*(1-easeoutback((Time.TotalTime-timeofdeath)/2f)))-dfont.charh),Color.White);
+            rendertext(c,dfont, "Press r to restart", new Vector2(120-predicttextwidth(dfont, "Press r to restart")/2f-1,round(67.5f+67.5f*(1-easeoutback((totaltime-timeofdeath)/2f)))+9-dfont.charh), shadowcol);
+            rendertext(c,dfont, "Press r to restart", new Vector2(120-predicttextwidth(dfont, "Press r to restart")/2f,round(67.5f+67.5f*(1-easeoutback((totaltime-timeofdeath)/2f)))+8-dfont.charh),Color.White);
+            rendertext(c,dfont,"Game Over",new Vector2(98,round(67.5f+67.5f*(1-easeoutback((totaltime-timeofdeath)/2f)))+1-dfont.charh), shadowcol);
+            rendertext(c,dfont,"Game Over",new Vector2(99,round(67.5f+67.5f*(1-easeoutback((totaltime-timeofdeath)/2f)))-dfont.charh),Color.White);
 
             if (Keyboard.IsKeyPressed(Key.R)) {
                 gameover = false;
@@ -294,11 +314,11 @@
                 ammo = startammo;
                 totalammo = (byte)r.Next(minammo, maxammo);
                 for (int i = 0; i < totalammo; i++)
-                    ammos.Add(new() { pos = new Vector2(r.Next(12, 228), r.Next(12, 100)), spawntime = Time.TotalTime + (float)r.NextDouble() / 6f });
-                starttime = Time.TotalTime;
+                    ammos.Add(new() { pos = new Vector2(r.Next(12, 228), r.Next(12, 100)), spawntime = totaltime + (float)r.NextDouble() / 6f });
+                starttime = totaltime;
             }
 
-            lastgootime = Time.TotalTime;
+            lastgootime = totaltime;
         }
 
         c.Flush();
@@ -308,7 +328,16 @@
         canv.Fill(sshad);
         canv.DrawRect(0,0,240,135);
 
-        canv.Fill(Color.White);
-        canv.DrawAlignedText(highness + "", 24, 3,64,Alignment.TopLeft);
+        /*Vector2 cforce = -camk * camshake;
+        Vector2 cdamp = -camb * camv * delta;
+        Vector2 caccel = (cforce + cdamp) / camm;
+        camv += caccel * delta;
+        camshake += camv * delta;*/
+
+        rendertext(canv, dfont, $"shake: {camshake}", new(3,64), Color.Black);
+        rendertext(canv, dfont, $"force: {cforce}", new(3,74), Color.Black);
+        rendertext(canv, dfont, $"damp: {cdamp}", new(3,84), Color.Black);
+        rendertext(canv, dfont, $"accel: {caccel}", new(3,94), Color.Black);
+        rendertext(canv, dfont, $"vel: {camv}", new(3,104), Color.Black);
     }
 }

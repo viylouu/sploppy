@@ -49,7 +49,7 @@ partial class sploppy {
                     shelltex,cursoroltex,cursortex,telecrysttex;
 
     //audio
-    static ISound music,shootsfx,shootnoammosfx,collectammosfx,collectgoosfx,windsfx,gameoversfx,startgamesfx,collecttelesfx,highpads,usecrystalsfx;
+    static ISound music,shootsfx,shootnoammosfx,collectammosfx,collectgoosfx,windsfx,gameoversfx,startgamesfx,collecttelesfx,highpads,usecrystalsfx,fadebacksfx;
     static SoundPlayback musicpb,windsfxpb,highpadspb;
 
     //ammo
@@ -58,7 +58,7 @@ partial class sploppy {
     static byte startammo,maxammo,minammo,totalammo,collammo;
 
     //shells
-    static List<particle> shells;
+    static List<shells> shells;
 
     //goo
     static collectible goo = new(), gooalt = new();
@@ -67,15 +67,20 @@ partial class sploppy {
 
     //telecrystals
     static byte crystals = 0;
-    static float maxcursorsize = 3;
+    static float maxcursorsize = 3.5f;
     static float highness = 0;
     static float gamespeedmult = .5f;
     static bool high = false;
-    static float highstarttime = 0;
+    static bool canshoot = true;
+    static float totaltime = 0;
 
     //canvas tex
     static ITexture canvas;
 
     //delta time
     static float delta;
+
+    //particles
+    static Color polcol = new Color(39,39,54); //particle outline color (p-ol-col)
+    static List<particle> particles;
 }

@@ -1,13 +1,11 @@
-﻿using NAudio.Wave.Compression;
-
-partial class sploppy {
+﻿partial class sploppy {
     public class Player {
         const byte drag = 24;
 
         public static uint Score;
 
         public static Vector2 Ppos = new Vector2(120, 64);
-        static Vector2 Pvel = Vector2.Zero;
+        public static Vector2 Pvel = Vector2.Zero;
 
         public static bool canmove = false;
 
@@ -34,6 +32,8 @@ partial class sploppy {
                 //Update Position
                 Ppos += Pvel * delta;
 
+                particles.Add(new() { pos = gunpos+normgundir*16, vel = normgundir*64, size = 4, col = Color.White, dcol = Color.Gainsboro });
+
                 if(!gameover) {
                     //Bounce
                     if (Ppos.Y < 3) { Pvel.Y = abs(Pvel.Y); Ppos.Y = 3; }
@@ -43,19 +43,22 @@ partial class sploppy {
                     //Lose State
                     if (Ppos.Y > 135) { 
                         gameover = true; 
-                        timeofdeath = Time.TotalTime; 
+                        timeofdeath = totaltime; 
                         gameoversfx.Play();
                         for (int i = 0; i < ammos.Count; i++)
-                            ammosalt.Add(new() { pos = ammos[i].pos, spawntime = Time.TotalTime, vely = -72f });
+                            ammosalt.Add(new() { pos = ammos[i].pos, spawntime = totaltime, vely = -72f });
                         ammos.Clear();
                         hasgoo = false;
                         hasgooalt = true;
-                        lastgootime = Time.TotalTime;
+                        lastgootime = totaltime;
                         gooalt.pos = goo.pos;
-                        gooalt.spawntime = Time.TotalTime;
+                        gooalt.spawntime = totaltime;
                         gooalt.vely = -72f;
                         crystals = 0;
+                        if(high)
+                            fadebacksfx.Play();
                         high = false;
+                        highness = 0;
 
                         if (Score > scoredisp) {
                             switch (diff) {
@@ -76,7 +79,7 @@ partial class sploppy {
                     }
 
                     //Score
-                    Score = (uint)MathF.Floor((Time.TotalTime-starttime)*4);
+                    Score = (uint)MathF.Floor((totaltime-starttime)*4);
 
                     //Gravity
                     Pvel.Y += gravity * delta;
@@ -90,14 +93,14 @@ partial class sploppy {
 
             if(!gameover) {
                 //Input
-                if (!high && ammo > 0 && (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space))) {
+                if (!high && ammo > 0 && (Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space)) && canshoot) {
                     Vector2 ldir = -Vector2.Normalize(Mouse.Position - Ppos);
                     Pvel = ldir * gunforce; 
                     ammo--; 
                     shootsfx.Play(); 
                     if (!canmove) {
                         startgamesfx.Play();
-                        starttime = Time.TotalTime;
+                        starttime = totaltime;
                         ++ammo;
                     }
                     canmove = true;
@@ -208,7 +211,7 @@ partial class sploppy {
                     shootsfx.Play(); 
                     if (!canmove) {
                         startgamesfx.Play();
-                        starttime = Time.TotalTime;
+                        starttime = totaltime;
                         ++ammo;
                     }
                     canmove = true;
@@ -321,12 +324,12 @@ partial class sploppy {
 
             //draw the cursor
             canvas.Translate(cursorpos.X-1,cursorpos.Y+1);
-            canvas.Rotate(Time.TotalTime*4);
+            canvas.Rotate(totaltime*4);
             canvas.DrawTexture(cursoroltex, new Rectangle(0,0, 9*cursorsize, 9*cursorsize, Alignment.Center), shadowcol);
             canvas.ResetState();
 
             canvas.Translate(cursorpos);
-            canvas.Rotate(Time.TotalTime*4);
+            canvas.Rotate(totaltime*4);
             canvas.DrawTexture(cursoroltex, Vector2.Zero, Vector2.One*9*cursorsize, Alignment.Center);
             canvas.ResetState();
 

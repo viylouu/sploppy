@@ -31,19 +31,19 @@
                 }
 
                 ammo = startammo;
-                lastgootime = Time.TotalTime;
-                starttime = Time.TotalTime;
+                lastgootime = totaltime;
+                starttime = totaltime;
                 collammo = 0;
             }
         }
 
         static void spawnanotherammo() {
             for (int i = 0; i < ammos.Count; i++)
-                ammosalt.Add(new() { pos = ammos[i].pos, spawntime = Time.TotalTime, vely = -72f });
+                ammosalt.Add(new() { pos = ammos[i].pos, spawntime = totaltime, vely = -72f });
             ammos.Clear();
             totalammo = (byte)r.Next(minammo, maxammo);
             for (int i = 0; i < totalammo; i++)
-                ammos.Add(new() { pos = new Vector2(r.Next(12, 228), r.Next(12, 100)), spawntime = Time.TotalTime + (float)r.NextDouble() / 6f });
+                ammos.Add(new() { pos = new Vector2(r.Next(12, 228), r.Next(12, 100)), spawntime = totaltime + (float)r.NextDouble() / 6f });
         }
 
         public static void DrawMenu(ICanvas c) {
