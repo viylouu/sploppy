@@ -6,4 +6,6 @@
     public float lasttime { get; set; }
     public Color col { get; set; }
     public Color dcol { get; set; }
+    public bool ignoretime { get; set; }
+    public bool gas { get; set; }
 }

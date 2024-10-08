@@ -32,8 +32,6 @@
                 //Update Position
                 Ppos += Pvel * delta;
 
-                particles.Add(new() { pos = gunpos+normgundir*16, vel = normgundir*64, size = 4, col = Color.White, dcol = Color.Gainsboro });
-
                 if(!gameover) {
                     //Bounce
                     if (Ppos.Y < 3) { Pvel.Y = abs(Pvel.Y); Ppos.Y = 3; }
@@ -117,6 +115,11 @@
                             rvel = (r.Next(0,2)*2-1)*32
                         }
                     );
+
+                    for(int i = 0; i < 24; i++) {
+                        Vector2 ndir = new Vector2(cos(gunrot+(float)r.NextDouble()/2f),sin(gunrot+(float)r.NextDouble()/2f));
+                        particles.Add(new() { pos = gunpos+ndir*16, vel = ndir*128, size = 6, col = new Color(96,96,112), dcol = new Color(67,67,79), gas = true });
+                    }
                 }
                 else if ((Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space)) && !high)
                     shootnoammosfx.Play();

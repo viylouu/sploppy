@@ -79,5 +79,7 @@
         }
 
         canvas = Graphics.CreateTexture(240,135);
+
+        //Graphics.SwapInterval = 12;
     }
 }

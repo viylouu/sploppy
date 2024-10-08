@@ -1,8 +1,10 @@
-﻿partial class sploppy {
+﻿using System.ComponentModel.Design;
+
+partial class sploppy {
     static void rend(ICanvas canv) {
         ICanvas c = canvas.GetCanvas();
 
-        delta = Time.DeltaTime * gamespeedmult;
+        delta = clamp(Time.DeltaTime,0.00001f,0.1f) * gamespeedmult;
 
         if(crystals > 0 && Keyboard.IsKeyPressed(Key.C)) { 
             high = true;
@@ -39,6 +41,12 @@
         Vector2 caccel = (cforce+cdamp)/camm;
         camv += caccel * delta;
         camshake += camv * delta;
+
+        if(float.IsNaN(camshake.X))
+            camshake = Vector2.Zero;
+
+        if(float.IsNaN(camv.X))
+            camv = Vector2.Zero;
 
         //detect and set background properties
         switch(diff) {
@@ -265,21 +273,50 @@
         //particles
         for(int i = 0; i < particles.Count; i++) {
             c.Stroke(polcol);
-            c.DrawCircle(particles[i].pos-camshake, particles[i].size);
+            c.DrawCircle(particles[i].pos-camshake, particles[i].size+.35f);
 
+            c.Fill(polcol);
+            c.DrawCircle(particles[i].pos-camshake, particles[i].size);
+        }
+
+        for(int i = 0; i < particles.Count; i++) {
             c.Fill(particles[i].dcol);
             c.DrawCircle(particles[i].pos-camshake, particles[i].size);
 
             c.Fill(particles[i].col);
-            c.DrawCircle(particles[i].pos-camshake + particles[i].size*new Vector2(.25f,-.25f), particles[i].size*.75f);
+            c.DrawCircle(particles[i].pos-camshake+particles[i].size*new Vector2(.25f,-.25f), particles[i].size*.75f);
 
             if(particles[i].vel.X > 0)
                 particles[i].vel -= new Vector2(24*delta,0);
             else if(particles[i].vel.X < 0)
                 particles[i].vel += new Vector2(24*delta,0);
 
-            particles[i].vel += new Vector2(0,gravity*delta);
-            particles[i].pos += particles[i].vel * delta;
+            if(!particles[i].ignoretime) {
+                particles[i].vel += new Vector2(0,(particles[i].gas?-1:1)*gravity*delta);
+                particles[i].pos += particles[i].vel*delta;
+            } else {
+                particles[i].vel += new Vector2(0,(particles[i].gas?-1:1)*gravity*Time.DeltaTime);
+                particles[i].pos += particles[i].vel*Time.DeltaTime;
+            }
+
+            if(particles[i].pos.X < -particles[i].size-1) {
+                particles.RemoveAt(i);
+                i--;
+            } else if(particles[i].pos.X > 240+particles[i].size+1) {
+                particles.RemoveAt(i);
+                i--;
+            } else {
+                if(!particles[i].gas) {
+                    if(particles[i].pos.Y > 135+particles[i].size+1) {
+                        particles.RemoveAt(i);
+                        i--;
+                    }
+                } else 
+                    if(particles[i].pos.Y < -particles[i].size-1) {
+                        particles.RemoveAt(i);
+                        i--;
+                    }
+            }
         }
 
         //draw the menu
@@ -327,17 +364,5 @@
         sshad.highness = highness;
         canv.Fill(sshad);
         canv.DrawRect(0,0,240,135);
-
-        /*Vector2 cforce = -camk * camshake;
-        Vector2 cdamp = -camb * camv * delta;
-        Vector2 caccel = (cforce + cdamp) / camm;
-        camv += caccel * delta;
-        camshake += camv * delta;*/
-
-        rendertext(canv, dfont, $"shake: {camshake}", new(3,64), Color.Black);
-        rendertext(canv, dfont, $"force: {cforce}", new(3,74), Color.Black);
-        rendertext(canv, dfont, $"damp: {cdamp}", new(3,84), Color.Black);
-        rendertext(canv, dfont, $"accel: {caccel}", new(3,94), Color.Black);
-        rendertext(canv, dfont, $"vel: {camv}", new(3,104), Color.Black);
     }
 }
