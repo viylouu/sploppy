@@ -8,4 +8,5 @@
     public Color dcol { get; set; }
     public bool ignoretime { get; set; }
     public bool gas { get; set; }
+    public float startsize { get; set; }
 }

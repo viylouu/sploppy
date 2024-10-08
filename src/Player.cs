@@ -118,7 +118,19 @@
 
                     for(int i = 0; i < 24; i++) {
                         Vector2 ndir = new Vector2(cos(gunrot+(float)r.NextDouble()/2f),sin(gunrot+(float)r.NextDouble()/2f));
-                        particles.Add(new() { pos = gunpos+ndir*16, vel = ndir*128, size = 6, col = new Color(96,96,112), dcol = new Color(67,67,79), gas = true });
+                        particles.Add(
+                            new() { 
+                                pos = gunpos+ndir*16, 
+                                vel = ndir*128, 
+                                size = 6, 
+                                col = new Color(96,96,112), 
+                                dcol = new Color(67,67,79), 
+                                gas = true, 
+                                spawntime = totaltime, 
+                                lasttime = 2,
+                                startsize = 6,
+                            }
+                        );
                     }
                 }
                 else if ((Mouse.IsButtonPressed(MouseButton.Left) || Keyboard.IsKeyPressed(Key.Space)) && !high)

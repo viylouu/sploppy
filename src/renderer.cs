@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.Design;
-
-partial class sploppy {
+﻿partial class sploppy {
     static void rend(ICanvas canv) {
         ICanvas c = canvas.GetCanvas();
 
@@ -27,6 +25,24 @@ partial class sploppy {
         musicpb.Volume = 1-highness;
         windsfxpb.Volume = 1-highness;
         highpadspb.Volume = highness;
+
+        if(high) { 
+            if(Time.TotalTime%.025f<=0.001f)
+                particles.Add(
+                    new() { 
+                        pos = Mouse.Position+camshake+new Vector2(((float)r.NextDouble()*2-1)*2), 
+                        vel = Vector2.Zero, 
+                        size = 2.5f, 
+                        col = new Color(255,255,235), 
+                        dcol = new Color(194,194,209), 
+                        gas = true, 
+                        spawntime = Time.TotalTime, 
+                        lasttime = 1,
+                        startsize = 2.5f,
+                        ignoretime = true
+                    }
+                );
+        }
 
         //Update
         Player.Updateplayer();
@@ -109,6 +125,63 @@ partial class sploppy {
             c.DrawTexture(telecrysttex,4+i*9,131+sin((totaltime+i/3f)*6)*2,Alignment.BottomLeft);
         }
 
+        //particles
+        for(int i = 0; i < particles.Count; i++) {
+            c.Fill(shadowcol);
+            c.DrawCircle(particles[i].pos-camshake+new Vector2(-1,1), particles[i].size+.75f);
+
+            c.Stroke(polcol);
+            c.DrawCircle(particles[i].pos-camshake, particles[i].size+.35f);
+
+            c.Fill(polcol);
+            c.DrawCircle(particles[i].pos-camshake, particles[i].size);
+        }
+
+        for(int i = 0; i < particles.Count; i++) {
+            c.Fill(particles[i].dcol);
+            c.DrawCircle(particles[i].pos-camshake, particles[i].size);
+
+            c.Fill(particles[i].col);
+            c.DrawCircle(particles[i].pos-camshake+particles[i].size*new Vector2(.25f,-.25f), particles[i].size*.75f);
+
+            if(particles[i].vel.X > 0)
+                particles[i].vel -= new Vector2(24*delta,0);
+            else if(particles[i].vel.X < 0)
+                particles[i].vel += new Vector2(24*delta,0);
+
+            if(!particles[i].ignoretime) {
+                particles[i].vel += new Vector2(0,(particles[i].gas?-1:1)*gravity*delta);
+                particles[i].pos += particles[i].vel*delta;
+                particles[i].size = particles[i].startsize*(-1/particles[i].lasttime*(totaltime-particles[i].spawntime)+1);
+            } else {
+                particles[i].vel += new Vector2(0,(particles[i].gas?-1:1)*gravity*Time.DeltaTime);
+                particles[i].pos += particles[i].vel*Time.DeltaTime;
+                particles[i].size = particles[i].startsize*(-1/particles[i].lasttime*(Time.TotalTime-particles[i].spawntime)+1);
+            }
+
+            if(particles[i].size <= -1) { 
+                particles.RemoveAt(i);
+                i--;
+            } else if(particles[i].pos.X < -particles[i].size-1) {
+                particles.RemoveAt(i);
+                i--;
+            } else if(particles[i].pos.X > 240+particles[i].size+1) {
+                particles.RemoveAt(i);
+                i--;
+            } else {
+                if(!particles[i].gas) {
+                    if(particles[i].pos.Y > 135+particles[i].size+1) {
+                        particles.RemoveAt(i);
+                        i--;
+                    }
+                } else 
+                    if(particles[i].pos.Y < -particles[i].size-1) {
+                        particles.RemoveAt(i);
+                        i--;
+                    }
+            }
+        }
+
         //ingame ammo collectible system
         for (int i = 0; i < ammos.Count; i++) {
             float scalemult = easeoutelastic(totaltime-ammos[i].spawntime);
@@ -143,6 +216,21 @@ partial class sploppy {
             float scalemult = easeoutelastic(totaltime-goo.spawntime);
             c.DrawTexture(gootex, new (goo.pos + new Vector2(-1,sin(totaltime*3)*3+1)-camshake, new Vector2(8,8)*scalemult, Alignment.Center), shadowcol);
             c.DrawTexture(gootex, goo.pos + new Vector2(0,sin(totaltime*3)*3)-camshake, new Vector2(8,8)*scalemult, Alignment.Center);
+
+            if(totaltime%.15f<=0.001f)
+                particles.Add(
+                    new() { 
+                        pos = goo.pos+new Vector2(((float)r.NextDouble()*2-1)*3,0), 
+                        vel = new Vector2(((float)r.NextDouble()*2-1)*48,((float)r.NextDouble()*2-1)*48), 
+                        size = 3, 
+                        col = new Color(143,222,93), 
+                        dcol = new Color(60,163,112), 
+                        gas = false, 
+                        spawntime = totaltime, 
+                        lasttime = 1,
+                        startsize = 3,
+                    }
+                );
 
             if (debug) {
                 c.Stroke(Color.Red);
@@ -267,55 +355,6 @@ partial class sploppy {
             if (rainposses[i].Y > Window.Height + 16) {
                 rainposses.RemoveAt(i);
                 i--;
-            }
-        }
-
-        //particles
-        for(int i = 0; i < particles.Count; i++) {
-            c.Stroke(polcol);
-            c.DrawCircle(particles[i].pos-camshake, particles[i].size+.35f);
-
-            c.Fill(polcol);
-            c.DrawCircle(particles[i].pos-camshake, particles[i].size);
-        }
-
-        for(int i = 0; i < particles.Count; i++) {
-            c.Fill(particles[i].dcol);
-            c.DrawCircle(particles[i].pos-camshake, particles[i].size);
-
-            c.Fill(particles[i].col);
-            c.DrawCircle(particles[i].pos-camshake+particles[i].size*new Vector2(.25f,-.25f), particles[i].size*.75f);
-
-            if(particles[i].vel.X > 0)
-                particles[i].vel -= new Vector2(24*delta,0);
-            else if(particles[i].vel.X < 0)
-                particles[i].vel += new Vector2(24*delta,0);
-
-            if(!particles[i].ignoretime) {
-                particles[i].vel += new Vector2(0,(particles[i].gas?-1:1)*gravity*delta);
-                particles[i].pos += particles[i].vel*delta;
-            } else {
-                particles[i].vel += new Vector2(0,(particles[i].gas?-1:1)*gravity*Time.DeltaTime);
-                particles[i].pos += particles[i].vel*Time.DeltaTime;
-            }
-
-            if(particles[i].pos.X < -particles[i].size-1) {
-                particles.RemoveAt(i);
-                i--;
-            } else if(particles[i].pos.X > 240+particles[i].size+1) {
-                particles.RemoveAt(i);
-                i--;
-            } else {
-                if(!particles[i].gas) {
-                    if(particles[i].pos.Y > 135+particles[i].size+1) {
-                        particles.RemoveAt(i);
-                        i--;
-                    }
-                } else 
-                    if(particles[i].pos.Y < -particles[i].size-1) {
-                        particles.RemoveAt(i);
-                        i--;
-                    }
             }
         }
 
