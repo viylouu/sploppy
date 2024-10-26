@@ -2,7 +2,7 @@
     static void rend(ICanvas canv) {
         ICanvas c = canvas.GetCanvas();
 
-        delta = clamp(Time.DeltaTime,0.00001f,0.1f) * gamespeedmult;
+        delta = clamp(Time.DeltaTime,0.00001f,0.075f) * gamespeedmult;
 
         if(crystals > 0 && Keyboard.IsKeyPressed(Key.C)) { 
             high = true;
@@ -52,17 +52,20 @@
         mainmenu.Updatemenu();
 
         //camera shake effect
+        /* (old and non lag friendly due to damp equation)
         Vector2 cforce = -camk*camshake;
         Vector2 cdamp = -camb*camv*delta;
         Vector2 caccel = (cforce+cdamp)/camm;
         camv += caccel * delta;
         camshake += camv * delta;
+        */
+        camshake += (-camshake)/(12/(delta*60));
 
         if(float.IsNaN(camshake.X))
             camshake = Vector2.Zero;
 
-        if(float.IsNaN(camv.X))
-            camv = Vector2.Zero;
+        //if(float.IsNaN(camv.X))
+        //    camv = Vector2.Zero;
 
         //detect and set background properties
         switch(diff) {

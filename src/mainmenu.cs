@@ -10,7 +10,6 @@
                     maxammo = 5;
                     minammo = 3;
                     spawnanotherammo();
-                    crystals = 0;
                 }
                 if (Keyboard.IsKeyPressed(Key.Key2))  { 
                     diff = 2;
@@ -20,7 +19,6 @@
                     maxammo = 7;
                     minammo = 4;
                     spawnanotherammo();
-                    crystals = 0;
                 }
                 if (Keyboard.IsKeyPressed(Key.Key3)) {
                     diff = 3;
@@ -30,13 +28,17 @@
                     maxammo = 10;
                     minammo = 6;
                     spawnanotherammo();
-                    crystals = 1;
                 }
 
                 ammo = startammo;
                 lastgootime = totaltime;
                 starttime = totaltime;
                 collammo = 0;
+
+                if(diff == 3)
+                    crystals = 1;
+                else
+                    crystals = 0;
             }
         }
 

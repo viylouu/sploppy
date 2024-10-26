@@ -14,8 +14,8 @@ partial class sploppy {
 
     //camerashake
     static Vector2 camshake;
-    static Vector2 camv /*vel*/, camep /*equilibrium pos*/;
-    const float camk = 400 /*stiff*/, camb = 10000 /*damping*/, camm = 1 /*mass*/;
+    //static Vector2 camv /*vel*/, camep /*equilibrium pos*/;
+    //const float camk = 400 /*stiff*/, camb = 10000 /*damping*/, camm = 1 /*mass*/;
 
     //bg grad
     static dithergradient bggrad = new();

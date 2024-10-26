@@ -104,8 +104,8 @@
                     canmove = true;
                     right = ldir.X > 0;
                     cursorsize += .5f;
-                    camshake += ldir*6;
-                    camv += ldir*6;
+                    camshake += ldir*12;
+                    //camv += ldir*6;
 
                     shells.Add(
                         new() { 
